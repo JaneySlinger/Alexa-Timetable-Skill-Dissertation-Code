@@ -1,0 +1,33 @@
+{
+  "deploy_settings": {
+    "default": {
+      "skill_id": "amzn1.ask.skill.f6a4b5ad-c476-47a6-a050-cef4df7c10dd",
+      "resources": {
+        "lambda": [
+          {
+            "alexaUsage": [
+              "custom/default"
+            ],
+            "arn": "arn:aws:lambda:us-east-1:683672828088:function:ask-custom-Test-default",
+            "awsRegion": "us-east-1",
+            "codeUri": "lambda/py/lambda_upload",
+            "functionName": "ask-custom-Test-default",
+            "handler": "hello_world.handler",
+            "revisionId": "a9e597e9-37d5-4b03-b786-45c38a158574",
+            "runtime": "python3.6"
+          }
+        ],
+        "manifest": {
+          "eTag": "6a7b523afd856b9b58b21974b038ff5c"
+        },
+        "interactionModel": {
+          "en-US": {
+            "eTag": "7bb39d9cc31b278f75824143da6e13a3"
+          }
+        }
+      },
+      "was_cloned": false,
+      "merge": {}
+    }
+  }
+}
