@@ -13,16 +13,16 @@
             "codeUri": "lambda/py/lambda_upload",
             "functionName": "ask-custom-Test-default",
             "handler": "hello_world.handler",
-            "revisionId": "a9e597e9-37d5-4b03-b786-45c38a158574",
+            "revisionId": "f90de1ee-fda7-4f19-a6b8-7b27a0822e09",
             "runtime": "python3.6"
           }
         ],
         "manifest": {
-          "eTag": "6a7b523afd856b9b58b21974b038ff5c"
+          "eTag": "ebb1c5e499ccd46c4fa514088d602c3c"
         },
         "interactionModel": {
           "en-US": {
-            "eTag": "7bb39d9cc31b278f75824143da6e13a3"
+            "eTag": "cf8283b2654ad9d5054a4879cb369338"
           }
         }
       },

@@ -2,8 +2,7 @@
     "interactionModel": {
         "languageModel": {
             "invocationName": "greeter",
-            "intents": [
-                {
+            "intents": [{
                     "name": "AMAZON.FallbackIntent",
                     "samples": []
                 },
@@ -26,6 +25,9 @@
                         "how are you",
                         "say hi world",
                         "say hi",
+                        "say hello to the world",
+                        "say hey",
+                        "say howdy",
                         "hi",
                         "hello",
                         "say hello world",
