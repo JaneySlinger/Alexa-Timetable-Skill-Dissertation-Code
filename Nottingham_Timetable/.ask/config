@@ -13,16 +13,16 @@
             "codeUri": "lambda/py/lambda_upload",
             "functionName": "ask-custom-Nottingham_Timetable-default",
             "handler": "hello_world.handler",
-            "revisionId": "f7ce86c4-569e-4dcd-9fc9-235d383f4547",
+            "revisionId": "e1f103a0-be09-4086-ae14-e2e32ec1f5be",
             "runtime": "python3.6"
           }
         ],
         "manifest": {
-          "eTag": "963b02328bef9fc7462a2848b01fe1b2"
+          "eTag": "87119294cd50c87697dbe7826bcb839c"
         },
         "interactionModel": {
           "en-US": {
-            "eTag": "7bb39d9cc31b278f75824143da6e13a3"
+            "eTag": "072d54309761f9a2571b864c3c859373"
           }
         }
       },

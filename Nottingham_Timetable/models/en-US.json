@@ -1,9 +1,8 @@
 {
     "interactionModel": {
         "languageModel": {
-            "invocationName": "greeter",
-            "intents": [
-                {
+            "invocationName": "nottingham timetable",
+            "intents": [{
                     "name": "AMAZON.FallbackIntent",
                     "samples": []
                 },
@@ -20,20 +19,86 @@
                     "samples": []
                 },
                 {
-                    "name": "HelloWorldIntent",
-                    "slots": [],
+                    "name": "TimeOfLectureIntent",
+                    "slots": [{
+                            "name": "module",
+                            "type": "moduleSlot"
+                        },
+                        {
+                            "name": "date",
+                            "type": "AMAZON.DATE"
+                        },
+                        {
+                            "name": "day",
+                            "type": "AMAZON.DayOfWeek"
+                        }
+                    ],
                     "samples": [
-                        "how are you",
-                        "say hi world",
-                        "say hi",
-                        "hi",
-                        "hello",
-                        "say hello world",
-                        "say hello"
+                        "when is my {module} {date}",
+                        "when is my {module} lecture {date}",
+                        "what time is my {module} lecture on {date}",
+                        "what time is the {module} lecture on {date}",
+                        "what time is {module} on {date}",
+                        "what time is my {module} lecture on {day}"
+                    ]
+                },
+                {
+                    "name": "DayLecturesIntent",
+                    "slots": [{
+                        "name": "date",
+                        "type": "AMAZON.DATE"
+                    }],
+                    "samples": [
+                        "what lectures do I have {date}",
+                        "what do I have {date}",
+                        "what's on my timetable {date}",
+                        "what do I have on {date}",
+                        "what's on my timetable on {date}",
+                        "what lectures do I have on {date}"
                     ]
                 }
             ],
-            "types": []
+            "types": [{
+                    "name": "moduleSlot",
+                    "values": [{
+                            "name": {
+                                "value": "G54SEM",
+                                "synonyms": [
+                                    "COMP4024",
+                                    "Software Engineering Management",
+                                    "s. e. m.",
+                                    "SEM"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "G53FIV",
+                                "synonyms": [
+                                    "Fundamentals of Information Visualisation",
+                                    "Information Visualisation",
+                                    "FIV",
+                                    "COMP3021",
+                                    "f. i. v."
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "G53IDS",
+                                "synonyms": [
+                                    "Individual Dissertation",
+                                    "IDS",
+                                    "i. d. s.",
+                                    "Dissertation",
+                                    "COMP3003"
+                                ]
+                            }
+                        }
+                    ]
+                }
+
+            ]
         }
     }
 }
