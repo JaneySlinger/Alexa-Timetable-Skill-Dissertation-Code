@@ -1,0 +1,33 @@
+{
+  "deploy_settings": {
+    "default": {
+      "skill_id": "amzn1.ask.skill.826fd763-c2c9-46f6-a2bc-13fbf3418229",
+      "resources": {
+        "lambda": [
+          {
+            "alexaUsage": [
+              "custom/default"
+            ],
+            "arn": "arn:aws:lambda:us-east-1:683672828088:function:ask-custom-Nottingham_Timetable-default",
+            "awsRegion": "us-east-1",
+            "codeUri": "lambda/py/lambda_upload",
+            "functionName": "ask-custom-Nottingham_Timetable-default",
+            "handler": "hello_world.handler",
+            "revisionId": "f7ce86c4-569e-4dcd-9fc9-235d383f4547",
+            "runtime": "python3.6"
+          }
+        ],
+        "manifest": {
+          "eTag": "963b02328bef9fc7462a2848b01fe1b2"
+        },
+        "interactionModel": {
+          "en-US": {
+            "eTag": "7bb39d9cc31b278f75824143da6e13a3"
+          }
+        }
+      },
+      "was_cloned": false,
+      "merge": {}
+    }
+  }
+}
