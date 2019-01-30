@@ -56,6 +56,56 @@
                         "what's on my timetable on {date}",
                         "what lectures do I have on {date}"
                     ]
+                },
+                {
+                    "name": "ModuleLecturesIntent",
+                    "slots": [{
+                        "name": "module",
+                        "type": "moduleSlot"
+                    }],
+                    "samples": [
+                        "when are the {module} lectures",
+                        "when is {module}",
+                        "when do I have {module}"
+                    ]
+                },
+                {
+                    "name": "LectureLocationIntent",
+                    "slots": [{
+                            "name": "module",
+                            "type": "moduleSlot"
+                        },
+                        {
+                            "name": "date",
+                            "type": "AMAZON.DATE"
+                        }
+                    ],
+                    "samples": [
+                        "where is my {module} {date}",
+                        "where is my {module} on {date}",
+                        "where is {module} {date}",
+                        "where is {module} on {date}"
+                    ]
+                },
+                {
+                    "name": "LecturerIntent",
+                    "slots": [{
+                        "name": "module",
+                        "type": "moduleSlot"
+                    }],
+                    "samples": [
+                        "Who teaches {module}",
+                        "Who is the lecturer for {module}"
+                    ]
+                },
+                {
+                    "name": "NextLectureIntent",
+                    "slots": [],
+                    "samples": [
+                        "what do I have now",
+                        "tell me about my next lecture"
+
+                    ]
                 }
             ],
             "types": [{
@@ -92,6 +142,17 @@
                                     "i. d. s.",
                                     "Dissertation",
                                     "COMP3003"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "G53SEC",
+                                "synonyms": [
+                                    "Computer Security",
+                                    "SEC",
+                                    "s. e. c.",
+                                    "COMP3006"
                                 ]
                             }
                         }

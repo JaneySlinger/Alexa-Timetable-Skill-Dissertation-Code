@@ -13,7 +13,7 @@
             "codeUri": "lambda/py/lambda_upload",
             "functionName": "ask-custom-Nottingham_Timetable-default",
             "handler": "hello_world.handler",
-            "revisionId": "e1f103a0-be09-4086-ae14-e2e32ec1f5be",
+            "revisionId": "0cb525f9-5afd-4bc4-8077-70b7ded3333a",
             "runtime": "python3.6"
           }
         ],
@@ -22,7 +22,7 @@
         },
         "interactionModel": {
           "en-US": {
-            "eTag": "072d54309761f9a2571b864c3c859373"
+            "eTag": "5d6e69f2417b51b299cc1c9fea1928b5"
           }
         }
       },

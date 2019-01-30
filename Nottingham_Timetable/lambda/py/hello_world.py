@@ -49,7 +49,7 @@ class TimeOfLectureIntentHandler(AbstractRequestHandler):
 
         handler_input.response_builder.speak(speech_text).set_card(
             SimpleCard("Your lecture is at 12pm", speech_text)).set_should_end_session(
-            True)
+            False)
         return handler_input.response_builder.response
 
 
@@ -66,7 +66,75 @@ class DayLecturesIntentHandler(AbstractRequestHandler):
 
         handler_input.response_builder.speak(speech_text).set_card(
             SimpleCard("FIV: 11am, SEM: 4pm", speech_text)).set_should_end_session(
-            True)
+            False)
+        return handler_input.response_builder.response
+
+
+class ModuleLecturesIntent(AbstractRequestHandler):
+    """Handler for ModuleLecturesIntent."""
+
+    def can_handle(self, handler_input):
+        # type: (HandlerInput) -> bool
+        return is_intent_name("ModuleLecturesIntent")(handler_input)
+
+    def handle(self, handler_input):
+        # type: (HandlerInput) -> Response
+        speech_text = "Computer Security has a lecture on Thursday at 1pm, a lab on Friday at 9am, and a lecture on Friday at 2pm."
+
+        handler_input.response_builder.speak(speech_text).set_card(
+            SimpleCard("SEC: Thu 1pm, Fri 9am, Fri 2pm", speech_text)).set_should_end_session(
+            False)
+        return handler_input.response_builder.response
+
+
+class LectureLocationIntent(AbstractRequestHandler):
+    """Handler for LectureLocationIntent."""
+
+    def can_handle(self, handler_input):
+        # type: (HandlerInput) -> bool
+        return is_intent_name("LectureLocationIntent")(handler_input)
+
+    def handle(self, handler_input):
+        # type: (HandlerInput) -> Response
+        speech_text = "The Computer Security lab on Friday is in COMPSCI A32 on Jubilee Campus."
+
+        handler_input.response_builder.speak(speech_text).set_card(
+            SimpleCard("Computer Security, Friday, COMPSCI A32, Jubilee", speech_text)).set_should_end_session(
+            False)
+        return handler_input.response_builder.response
+
+
+class LecturerIntent(AbstractRequestHandler):
+    """Handler for LecturerIntent."""
+
+    def can_handle(self, handler_input):
+        # type: (HandlerInput) -> bool
+        return is_intent_name("LecturerIntent")(handler_input)
+
+    def handle(self, handler_input):
+        # type: (HandlerInput) -> Response
+        speech_text = "Computer Security is taught by Dr M. Pound."
+
+        handler_input.response_builder.speak(speech_text).set_card(
+            SimpleCard("Computer Security is taught by Dr M. Pound", speech_text)).set_should_end_session(
+            False)
+        return handler_input.response_builder.response
+
+
+class NextLectureIntent(AbstractRequestHandler):
+    """Handler for NextLectureIntent."""
+
+    def can_handle(self, handler_input):
+        # type: (HandlerInput) -> bool
+        return is_intent_name("NextLectureIntent")(handler_input)
+
+    def handle(self, handler_input):
+        # type: (HandlerInput) -> Response
+        speech_text = "Your next lecture is Computer Security in COMPSCI A32 at 9am."
+
+        handler_input.response_builder.speak(speech_text).set_card(
+            SimpleCard("Computer Security in COMPSCI A32 at 9am", speech_text)).set_should_end_session(
+            False)
         return handler_input.response_builder.response
 
 
@@ -158,6 +226,10 @@ class CatchAllExceptionHandler(AbstractExceptionHandler):
 sb.add_request_handler(LaunchRequestHandler())
 sb.add_request_handler(TimeOfLectureIntentHandler())
 sb.add_request_handler(DayLecturesIntentHandler())
+sb.add_request_handler(ModuleLecturesIntent())
+sb.add_request_handler(LectureLocationIntent())
+sb.add_request_handler(LecturerIntent())
+sb.add_request_handler(NextLectureIntent())
 sb.add_request_handler(HelpIntentHandler())
 sb.add_request_handler(CancelOrStopIntentHandler())
 sb.add_request_handler(FallbackIntentHandler())
