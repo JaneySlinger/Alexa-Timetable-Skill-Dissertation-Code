@@ -1,21 +1,18 @@
-from icalevents.icalevents import events
-from icalevents.icalparser import parse_events
-# https://medium.com/@ageitgey/python-3-quick-tip-the-easy-way-to-deal-with-file-paths-on-windows-mac-and-linux-11a072b58d5f
-from pathlib import Path
-import random
-import pathlib
+from icalendar import Calendar, Event
+from datetime import datetime, date
 
-
-file_path = pathlib.Path(
-    r'C:\Users\Janey\Documents\DissertationCode\dissertationcode\IcalTests\calendar.ics')
-
-#es = events(None, file_path, None, None, None, False)
-#events = parse_events(es, None, None)
-
-# for a in events:
-#    print("a")
-
-# just checking that the program runs.
-print("Hello World!")
-for i in range(10):
-    print(random.randint(1, 25))
+# opening and reading the values from the ical file using the icalendar module
+# https://stackoverflow.com/questions/3408097/parsing-files-ics-icalendar-using-python
+icalFile = open('calendar.ics', 'rb')
+calendar_to_parse = Calendar.from_ical(icalFile.read())
+for component in calendar_to_parse.walk():
+    if component.name == "VEVENT":
+        print(component.get('summary'))
+        print(component.get('description'))
+        print(component.get('location'))
+        # the .dt converts the time to datetime object so that it can be read and processed more easily
+        # example of this taken from https://stackoverflow.com/questions/26238835/parse-dates-with-icalendar-and-compare-to-python-datetime
+        print(component['DTSTART'].dt)
+        print(component['DTEND'].dt)
+        print(component['DTSTAMP'].dt)
+icalFile.close()
