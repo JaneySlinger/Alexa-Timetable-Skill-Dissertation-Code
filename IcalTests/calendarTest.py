@@ -6,11 +6,14 @@ from datetime import datetime, date
 
 # data I need to get from the event:
 # Module Name
+# Module code
 # LOCATION - already got
 # time and date - already got
 # lecturer - get from description
 # duration?
 # type
+
+timetableData = []
 
 
 def printWholeCalendar():
@@ -19,13 +22,7 @@ def printWholeCalendar():
     calendar_to_parse = Calendar.from_ical(icalFile.read())
     for component in calendar_to_parse.walk():
         if component.name == "VEVENT":
-            print(component.get('summary'))
-            print(component.get('description'))
-            print(component.get('location'))
-            # the .dt converts the time to datetime object so that it can be read and processed more easily
-            # example of this taken from https://stackoverflow.com/questions/26238835/parse-dates-with-icalendar-and-compare-to-python-datetime
-            print(component['DTSTART'].dt)
-            print(component['DTEND'].dt)
+            extractData(component)
     icalFile.close()
 
 
@@ -65,6 +62,7 @@ def extractData(component):
     separated_words = summary.split(" - ", 1)
     module_name = separated_words[0]
     print(module_name)
+
     event_type = separated_words[1]
     print(event_type)
 
@@ -87,7 +85,11 @@ def extractData(component):
         ": ")[1]  # still has the /01 on the end
     # split into COMP 3006 and 01 and then ignore the 01 at the end
     partial_code = module_code_raw.split("/")
-    module_code = partial_code[0] + partial_code[1]
+    if(len(partial_code) > 1):
+        # The Dissertation module does not have a module code in the timetable file.
+        module_code = partial_code[0] + partial_code[1]
+    else:
+        module_code = "NONE"
     print(module_code)
 
     location = component.get('location')
@@ -104,7 +106,13 @@ def extractData(component):
 
     print("\n")
 
+    # convert the datetime objects? I may need to change this depending on how alexa uses them.
+
+    timetableData.append({"module": module_name, "lecturer": lecturer, "code": module_code,
+                          "location": location, "time": start_time, "duration": duration})
+
 
 # printWholeCalendar()
-#printSelectModule("Computer Graphics")
-printTodayTimetable()
+printSelectModule("Dissertation")
+# printTodayTimetable()
+print(timetableData)
