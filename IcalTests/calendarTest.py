@@ -108,11 +108,11 @@ def extractData(component):
 
     # convert the datetime objects? I may need to change this depending on how alexa uses them.
 
-    timetableData.append({"module": module_name, "lecturer": lecturer, "code": module_code,
+    timetableData.append({"module": module_name, "type": event_type, "lecturer": lecturer, "code": module_code,
                           "location": location, "time": start_time, "duration": duration})
 
 
 # printWholeCalendar()
-printSelectModule("Dissertation")
+printSelectModule("Graphics")
 # printTodayTimetable()
 print(timetableData)
