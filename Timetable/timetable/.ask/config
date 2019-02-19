@@ -1,0 +1,33 @@
+{
+  "deploy_settings": {
+    "default": {
+      "skill_id": "amzn1.ask.skill.155c5ec5-aff4-4126-a073-d09f4e25d5ad",
+      "resources": {
+        "lambda": [
+          {
+            "alexaUsage": [
+              "custom/default"
+            ],
+            "arn": "arn:aws:lambda:us-east-1:683672828088:function:ask-custom-timetable-default",
+            "awsRegion": "us-east-1",
+            "codeUri": "lambda/py/lambda_upload",
+            "functionName": "ask-custom-timetable-default",
+            "handler": "lambda_function.lambda_handler",
+            "revisionId": "70d09988-9617-4b0d-9ea7-43af04fc775c",
+            "runtime": "python3.6"
+          }
+        ],
+        "manifest": {
+          "eTag": "279de27b09a8106fd10ded7231905b9a"
+        },
+        "interactionModel": {
+          "en-US": {
+            "eTag": "1fdc3c2b3c24471b70d20db085b5bbc6"
+          }
+        }
+      },
+      "was_cloned": false,
+      "merge": {}
+    }
+  }
+}
