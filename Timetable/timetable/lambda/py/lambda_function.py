@@ -33,6 +33,7 @@ logger.setLevel(logging.INFO)
 # Request Handler classes
 class LaunchRequestHandler(AbstractRequestHandler):
     """Handler for skill launch."""
+
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         return is_request_type("LaunchRequest")(handler_input)
@@ -54,6 +55,7 @@ class LaunchRequestHandler(AbstractRequestHandler):
 
 class AboutIntentHandler(AbstractRequestHandler):
     """Handler for about intent."""
+
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         return is_intent_name("AboutIntent")(handler_input)
@@ -67,15 +69,16 @@ class AboutIntentHandler(AbstractRequestHandler):
         return handler_input.response_builder.response
 
 
-class CoffeeIntentHandler(AbstractRequestHandler):
-    """Handler for coffee intent."""
+class BeforeLectureIntentHandler(AbstractRequestHandler):
+    """Handler for before lecture intent."""
+
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
-        return is_intent_name("CoffeeIntent")(handler_input)
+        return is_intent_name("BeforeLectureIntent")(handler_input)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
-        logger.info("In CoffeeIntentHandler")
+        logger.info("In BeforeLectureIntentHandler")
 
         attribute_manager = handler_input.attributes_manager
         session_attr = attribute_manager.session_attributes
@@ -90,15 +93,16 @@ class CoffeeIntentHandler(AbstractRequestHandler):
         return handler_input.response_builder.response
 
 
-class BreakfastIntentHandler(AbstractRequestHandler):
-    """Handler for breakfast intent."""
+class DetailedIndividualDayIntentHandler(AbstractRequestHandler):
+    """Handler for DetailedIndividualDayIntent."""
+
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
-        return is_intent_name("BreakfastIntent")(handler_input)
+        return is_intent_name("DetailedIndividualDayIntent")(handler_input)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
-        logger.info("In BreakfastIntentHandler")
+        logger.info("In DetailedIndividualDayIntentHandler")
 
         attribute_manager = handler_input.attributes_manager
         session_attr = attribute_manager.session_attributes
@@ -113,15 +117,16 @@ class BreakfastIntentHandler(AbstractRequestHandler):
         return handler_input.response_builder.response
 
 
-class LunchIntentHandler(AbstractRequestHandler):
-    """Handler for lunch intent."""
+class WeekOverviewIntentHandler(AbstractRequestHandler):
+    """Handler for WeekOverviewIntent."""
+
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
-        return is_intent_name("LunchIntent")(handler_input)
+        return is_intent_name("WeekOverviewIntent")(handler_input)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
-        logger.info("In LunchIntentHandler")
+        logger.info("In WeekOverviewIntentHandler")
 
         attribute_manager = handler_input.attributes_manager
         session_attr = attribute_manager.session_attributes
@@ -136,15 +141,16 @@ class LunchIntentHandler(AbstractRequestHandler):
         return handler_input.response_builder.response
 
 
-class DinnerIntentHandler(AbstractRequestHandler):
-    """Handler for dinner intent."""
+class NextLectureIntentHandler(AbstractRequestHandler):
+    """Handler for NextLectureIntent."""
+
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
-        return is_intent_name("DinnerIntent")(handler_input)
+        return is_intent_name("NextLectureIntent")(handler_input)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
-        logger.info("In DinnerIntentHandler")
+        logger.info("In NextLectureIntentHandler")
 
         attribute_manager = handler_input.attributes_manager
         session_attr = attribute_manager.session_attributes
@@ -161,11 +167,12 @@ class DinnerIntentHandler(AbstractRequestHandler):
 
 class YesMoreInfoIntentHandler(AbstractRequestHandler):
     """Handler for yes to get more info intent."""
+
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.YesIntent")(handler_input) and
-                "restaurant" in session_attr)
+        return (is_intent_name("AMAZON.YesIntent")(handler_input)
+                and "restaurant" in session_attr)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -201,11 +208,12 @@ class YesMoreInfoIntentHandler(AbstractRequestHandler):
 
 class NoMoreInfoIntentHandler(AbstractRequestHandler):
     """Handler for no to get no more info intent."""
+
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.NoIntent")(handler_input) and
-                "restaurant" in session_attr)
+        return (is_intent_name("AMAZON.NoIntent")(handler_input)
+                and "restaurant" in session_attr)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -218,15 +226,16 @@ class NoMoreInfoIntentHandler(AbstractRequestHandler):
         return handler_input.response_builder.response
 
 
-class AttractionIntentHandler(AbstractRequestHandler):
-    """Handler for attraction intent."""
+class FirstLectureIntentHandler(AbstractRequestHandler):
+    """Handler for FirstLectureIntent."""
+
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
-        return is_intent_name("AttractionIntent")(handler_input)
+        return is_intent_name("FirstLectureIntent")(handler_input)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
-        logger.info("In AttractionIntentHandler")
+        logger.info("In FirstLectureIntentHandler")
         distance = util.get_resolved_value(
             handler_input.request_envelope.request, "distance")
         if distance is None:
@@ -245,28 +254,9 @@ class AttractionIntentHandler(AbstractRequestHandler):
         return handler_input.response_builder.response
 
 
-class GoOutIntentHandler(AbstractRequestHandler):
-    """Handler for go out intent."""
-    def can_handle(self, handler_input):
-        # type: (HandlerInput) -> bool
-        return is_intent_name("GoOutIntent")(handler_input)
-
-    def handle(self, handler_input):
-        # type: (HandlerInput) -> Response
-        logger.info("In GoOutIntentHandler")
-        local_time, current_temp, current_condition = util.get_weather(
-            data.CITY_DATA, data.MY_API)
-
-        speech = "It is {} and the weather in {} is {} and {}.".format(
-            local_time, data.CITY_DATA["city"], current_temp,
-            current_condition)
-
-        handler_input.response_builder.speak(speech)
-        return handler_input.response_builder.response
-
-
 class SessionEndedRequestHandler(AbstractRequestHandler):
     """Handler for skill session end."""
+
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         return is_request_type("SessionEndedRequest")(handler_input)
@@ -281,6 +271,7 @@ class SessionEndedRequestHandler(AbstractRequestHandler):
 
 class HelpIntentHandler(AbstractRequestHandler):
     """Handler for help intent."""
+
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         return is_intent_name("AMAZON.HelpIntent")(handler_input)
@@ -297,10 +288,11 @@ class HelpIntentHandler(AbstractRequestHandler):
 
 class ExitIntentHandler(AbstractRequestHandler):
     """Single Handler for Cancel, Stop intents."""
+
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
-        return (is_intent_name("AMAZON.CancelIntent")(handler_input) or
-                is_intent_name("AMAZON.StopIntent")(handler_input))
+        return (is_intent_name("AMAZON.CancelIntent")(handler_input)
+                or is_intent_name("AMAZON.StopIntent")(handler_input))
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -319,14 +311,15 @@ class FallbackIntentHandler(AbstractRequestHandler):
      2018-May-01: AMAZON.FallackIntent is only currently available in
      en-US locale. This handler will not be triggered except in that
      locale, so it can be safely deployed for any locale."""
+
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.FallbackIntent")(handler_input) or
-                ("restaurant" not in session_attr and (
-                    is_intent_name("AMAZON.YesIntent")(handler_input) or
-                    is_intent_name("AMAZON.NoIntent")(handler_input))
-                 ))
+        return (is_intent_name("AMAZON.FallbackIntent")(handler_input)
+                or ("restaurant" not in session_attr and (
+                    is_intent_name("AMAZON.YesIntent")(handler_input)
+                    or is_intent_name("AMAZON.NoIntent")(handler_input))
+                    ))
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -335,7 +328,7 @@ class FallbackIntentHandler(AbstractRequestHandler):
 
         handler_input.response_builder.speak(_(
             data.FALLBACK).format(data.SKILL_NAME)).ask(_(
-            data.FALLBACK).format(data.SKILL_NAME))
+                data.FALLBACK).format(data.SKILL_NAME))
 
         return handler_input.response_builder.response
 
@@ -346,6 +339,7 @@ class CatchAllExceptionHandler(AbstractExceptionHandler):
 
     This handler catches all kinds of exceptions and prints
     the stack trace on AWS Cloudwatch with the request envelope."""
+
     def can_handle(self, handler_input, exception):
         # type: (HandlerInput, Exception) -> bool
         return True
@@ -364,6 +358,7 @@ class CatchAllExceptionHandler(AbstractExceptionHandler):
 
 class LocalizationInterceptor(AbstractRequestInterceptor):
     """Add function to request attributes, that can load locale specific data."""
+
     def process(self, handler_input):
         # type: (HandlerInput) -> None
         locale = handler_input.request_envelope.request.locale
@@ -377,14 +372,13 @@ class LocalizationInterceptor(AbstractRequestInterceptor):
 # Add all request handlers to the skill.
 sb.add_request_handler(LaunchRequestHandler())
 sb.add_request_handler(AboutIntentHandler())
-sb.add_request_handler(CoffeeIntentHandler())
-sb.add_request_handler(BreakfastIntentHandler())
-sb.add_request_handler(LunchIntentHandler())
-sb.add_request_handler(DinnerIntentHandler())
+sb.add_request_handler(BeforeLectureIntentHandler())
+sb.add_request_handler(DetailedIndividualDayIntentHandler())
+sb.add_request_handler(WeekOverviewIntentHandler())
+sb.add_request_handler(NextLectureIntentHandler())
 sb.add_request_handler(YesMoreInfoIntentHandler())
 sb.add_request_handler(NoMoreInfoIntentHandler())
-sb.add_request_handler(AttractionIntentHandler())
-sb.add_request_handler(GoOutIntentHandler())
+sb.add_request_handler(FirstLectureIntentHandler())
 sb.add_request_handler(HelpIntentHandler())
 sb.add_request_handler(FallbackIntentHandler())
 sb.add_request_handler(ExitIntentHandler())

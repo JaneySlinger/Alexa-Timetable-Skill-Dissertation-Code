@@ -1,101 +1,116 @@
 {
-  "interactionModel": {
-    "languageModel": {
-      "invocationName": "city guide",
-      "intents": [
-        {
-          "name": "AboutIntent",
-          "samples": [
-            "about",
-            "tell me about this place"
-          ],
-          "slots": []
-        },
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "city guide",
+            "intents": [{
+                    "name": "AboutIntent",
+                    "samples": [
+                        "about",
+                        "tell me about my timetable"
+                    ],
+                    "slots": []
+                },
 
-        {
-          "name": "CoffeeIntent",
-          "samples": [
-            "coffee"
-          ],
-          "slots": []
-        },
-        {
-          "name": "BreakfastIntent",
-          "samples": [
-            "breakfast"
-          ],
-          "slots": []
-        },
-        {
-          "name": "LunchIntent",
-          "samples": [
-            "lunch"
-          ],
-          "slots": []
-        },
-        {
-          "name": "DinnerIntent",
-          "samples": [
-            "dinner"
-          ],
-          "slots": []
-        },
+                {
+                    "name": "BeforeLectureIntent",
+                    "samples": [
+                        "where is my lecture",
+                        "wheres my lecture"
+                    ],
+                    "slots": []
+                },
+                {
+                    "name": "DetailedIndividualDayIntent",
+                    "samples": [
+                        "tell me what lectures i have {day}",
+                        "tell me what lectures I have on {weekday}",
+                        "what do i have {day}",
+                        "what do I have {day}",
+                        "what do I have on {weekday}",
+                        "what lectures do i have on {weekday}",
+                        "what lectures do i have {day}",
+                        "whats on my timetable {day}",
+                        "whats on my timetable on {weekday}"
 
-        {
-          "name": "AttractionIntent",
-          "samples": [
-            "give me an activity within {distance} mile",
-            "recommend an attraction within {distance} mile",
-            "attraction",
-            "recommend an attraction",
-            "recommend an attraction within {distance} miles",
-            "give me an activity",
-            "give me an activity within {distance} miles"
-          ],
-          "slots": [
-            {
-              "name": "distance",
-              "type": "AMAZON.NUMBER",
-              "samples": []
-            }
-          ]
-        },
+                    ],
+                    "slots": [{
+                            "name": "day",
+                            "type": "AMAZON.DATE",
+                            "samples": []
+                        },
+                        {
+                            "name": "weekday",
+                            "type": "AMAZON.DayOfWeek",
+                            "samples": []
+                        }
+                    ]
+                },
+                {
+                    "name": "WeekOverviewIntent",
+                    "samples": [
+                        "what lectures do i have this week",
+                        "whats on my timetable this week",
+                        "what do i have this week"
+                    ],
+                    "slots": []
+                },
+                {
+                    "name": "NextLectureIntent",
+                    "samples": [
+                        "when is my next lecture",
+                        "when is my lecture",
+                        "how long do i have before my next lecture",
+                        "what is the next lecture that i have"
+                    ],
+                    "slots": []
+                },
 
-        {
-          "name": "GoOutIntent",
-          "samples": [
-            "go out",
-            "go outside",
-            "lets go out"
-          ],
-          "slots": []
-        },
-        {
-          "name": "AMAZON.YesIntent",
-          "samples": []
-        },
-        {
-          "name": "AMAZON.NoIntent",
-          "samples": []
-        },
+                {
+                    "name": "FirstLectureIntent",
+                    "samples": [
+                        "when and what is my first lecture {day}",
+                        "whats my first lecture {day}",
+                        "whats my first lecture on {weekday}",
+                        "tell me about my first lecture {day}",
+                        "what time do i need to be on campus {day}",
+                        "what time do i need to be on campus on {weekday}",
+                        "what time do lectures start on {weekday}",
+                        "what time do lectures start {day}"
+                    ],
+                    "slots": [{
+                            "name": "day",
+                            "type": "AMAZON.DATE",
+                            "samples": []
+                        },
+                        {
+                            "name": "weekday",
+                            "type": "AMAZON.DayOfWeek",
+                            "samples": []
+                        }
+                    ]
+                },
+                {
+                    "name": "AMAZON.YesIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NoIntent",
+                    "samples": []
+                },
 
-        {
-          "name": "AMAZON.HelpIntent",
-          "samples": []
-        },
-        {
-          "name": "AMAZON.StopIntent",
-          "samples": []
-        },
-        {
-          "name": "AMAZON.CancelIntent",
-          "samples": []
-        },
-        {
-          "name": "AMAZON.FallbackIntent",
-          "samples": []
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                }
+            ]
         }
-      ]
     }
-  }
 }
