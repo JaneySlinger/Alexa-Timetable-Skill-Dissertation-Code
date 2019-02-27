@@ -92,32 +92,36 @@ def extractData(component):
         module_code = "NONE"
     # print(module_code)
 
-    location = component.get('location')
-    # print(location)
+    # separate and format the location value.
+    location = (component.get('location')).split("-")
+    campus = location[0]
+    building = location[1]
+    # may need to remove . and + from some room codes
+    room = location[2]
+
+    #print(campus + ", " + building + ", " + room)
+
     # the .dt converts the time to datetime object so that it can be read and processed more easily
     # example of this taken from https://stackoverflow.com/questions/26238835/parse-dates-with-icalendar-and-compare-to-python-datetime
-
     start_time = component['DTSTART'].dt
-    # want to store the date as YYYY-MM-DD so it matches AMAZON.DATE format
+    # Store the date as YYYY-MM-DD so it matches AMAZON.DATE format
     date = "{:%Y-%m-%d}".format(start_time)
     # print(date)
 
-    # also want to store the time as HH:MM so that it matches the AMAZON.TIME format
+    # Store the time as HH:MM so that it matches the AMAZON.TIME format
     time = "{:%H:%M}".format(start_time)
     # print(time)
 
-    # Calculate the duration
+    # Calculate the duration and convert to hours and minutes as a string
     end_time = component['DTEND'].dt
-    duration = end_time - start_time
-    #duration = "{:%H:%M}".format(duration)
-    # print(duration)
-
+    duration = str(end_time - start_time).split(":")
+    hour_duration = duration[0]
+    minute_duration = duration[1]
+    #print(hour_duration + ":" + minute_duration)
     # print("\n")
 
-    # convert the datetime objects? I may need to change this depending on how alexa uses them.
-
     timetableData.append({"module": module_name, "type": event_type, "lecturer": lecturer, "code": module_code,
-                          "location": location, "date": date, "time": time, "duration": duration})
+                          "location_campus": campus, "location_building": building, "location_room": room, "date": date, "time": time, "duration_hours": hour_duration, "duration_minutes": minute_duration})
 
 
 printWholeCalendar()
