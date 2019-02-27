@@ -1,5 +1,5 @@
 
-from calendarData import TIMETABLE_DATA
+from alexa import data
 
 # data is stored as a list of dictionaries, as seen below
 # timetableData = [

@@ -67,3 +67,13 @@ def get_resolved_value(request, slot_name):
         return request.intent.slots[slot_name].value
     except (AttributeError, ValueError, KeyError, IndexError):
         return None
+
+
+def searchByDate(timetableData, date):
+    '''search for events taking place on a certain date'''
+    # returns a list of all the events matching the date
+    # takes date, a string in the format "YYYY-MM-DD", and the timetable data
+
+    # search for the date in the list of events
+    # returns unsorted list, may need to sort by time of day
+    return [event for event in timetableData if event['date'] == date]

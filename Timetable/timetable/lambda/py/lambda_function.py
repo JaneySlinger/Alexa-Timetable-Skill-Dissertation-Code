@@ -21,7 +21,7 @@ from ask_sdk_core.utils import is_intent_name, is_request_type
 from ask_sdk_model import Response
 from ask_sdk_model.ui import SimpleCard
 
-from alexa import data, util, searchTimetable
+from alexa import data, util
 
 # Skill Builder object
 sb = SkillBuilder()
@@ -109,7 +109,7 @@ class DetailedIndividualDayIntentHandler(AbstractRequestHandler):
         session_attr = attribute_manager.session_attributes
 
         # find the event on that day (using thursday as an example as there is only one lecture)
-        events = searchTimetable.searchByDate('2019-02-28')
+        events = util.searchByDate(data.TIMETABLE_DATA, '2019-02-28')
         #restaurant = random.choice(util.get_restaurants_by_meal(data.CITY_DATA, "breakfast"))
 
         # save the session attrbite so it can be used in the YesMoreInfoIntentHandler
@@ -117,7 +117,7 @@ class DetailedIndividualDayIntentHandler(AbstractRequestHandler):
 
         # define how you want alexa to respond.
         speech = ("On day you have a {} hour {} {} at {}").format(
-            events["duration_hours"], events["module"], events["type"], events["time"])
+            events[0]["duration_hours"], events[0]["module"], events[0]["type"], events[0]["time"])
         #speech = ("For breakfast, try this. {}. Would you ""like to hear more?").format(restaurant["name"])
 
         handler_input.response_builder.speak(speech).ask(speech)
