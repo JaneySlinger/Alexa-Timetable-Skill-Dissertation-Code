@@ -13,7 +13,7 @@ from datetime import datetime, date
 # duration?
 # type
 
-timetableData = []
+TIMETABLE_DATA = []
 
 
 def printWholeCalendar():
@@ -120,11 +120,11 @@ def extractData(component):
     #print(hour_duration + ":" + minute_duration)
     # print("\n")
 
-    timetableData.append({"module": module_name, "type": event_type, "lecturer": lecturer, "code": module_code,
-                          "location_campus": campus, "location_building": building, "location_room": room, "date": date, "time": time, "duration_hours": hour_duration, "duration_minutes": minute_duration})
+    TIMETABLE_DATA.append({"module": module_name, "type": event_type, "lecturer": lecturer, "code": module_code,
+                           "location_campus": campus, "location_building": building, "location_room": room, "date": date, "time": time, "duration_hours": hour_duration, "duration_minutes": minute_duration})
 
 
 printWholeCalendar()
 # printSelectModule("Graphics")
 # printTodayTimetable()
-print(timetableData)
+print(TIMETABLE_DATA)
