@@ -61,10 +61,10 @@ def extractData(component):
     # https://docs.python.org/3/library/stdtypes.html#str.split
     separated_words = summary.split(" - ", 1)
     module_name = separated_words[0]
-    print(module_name)
+    # print(module_name)
 
     event_type = separated_words[1]
-    print(event_type)
+    # print(event_type)
 
     # description in form:
     # "Taught by: Lecturer name
@@ -79,7 +79,7 @@ def extractData(component):
     lecturer = lines_of_description[0].split(": ")[1]
     # may want to reverse the order so it reads Dr M Pound rather than Pound M Dr
     # would do this by splitting the string, reordering the resulting words, and joining
-    print(lecturer)
+    # print(lecturer)
 
     module_code_raw = lines_of_description[2].split(
         ": ")[1]  # still has the /01 on the end
@@ -90,29 +90,37 @@ def extractData(component):
         module_code = partial_code[0] + partial_code[1]
     else:
         module_code = "NONE"
-    print(module_code)
+    # print(module_code)
 
     location = component.get('location')
-    print(location)
+    # print(location)
     # the .dt converts the time to datetime object so that it can be read and processed more easily
     # example of this taken from https://stackoverflow.com/questions/26238835/parse-dates-with-icalendar-and-compare-to-python-datetime
+
     start_time = component['DTSTART'].dt
-    print(start_time)
+    # want to store the date as YYYY-MM-DD so it matches AMAZON.DATE format
+    date = "{:%Y-%m-%d}".format(start_time)
+    # print(date)
+
+    # also want to store the time as HH:MM so that it matches the AMAZON.TIME format
+    time = "{:%H:%M}".format(start_time)
+    # print(time)
+
+    # Calculate the duration
     end_time = component['DTEND'].dt
-
-    # need to work out the duration
     duration = end_time - start_time
-    print(duration)
+    #duration = "{:%H:%M}".format(duration)
+    # print(duration)
 
-    print("\n")
+    # print("\n")
 
     # convert the datetime objects? I may need to change this depending on how alexa uses them.
 
     timetableData.append({"module": module_name, "type": event_type, "lecturer": lecturer, "code": module_code,
-                          "location": location, "time": start_time, "duration": duration})
+                          "location": location, "date": date, "time": time, "duration": duration})
 
 
-# printWholeCalendar()
-printSelectModule("Graphics")
+printWholeCalendar()
+# printSelectModule("Graphics")
 # printTodayTimetable()
 print(timetableData)
