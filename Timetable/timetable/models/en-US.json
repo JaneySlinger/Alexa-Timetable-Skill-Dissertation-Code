@@ -23,27 +23,20 @@
                     "name": "DetailedIndividualDayIntent",
                     "samples": [
                         "tell me what lectures i have {day}",
-                        "tell me what lectures I have on {weekday}",
+                        "tell me what lectures I have on {day}",
                         "what do i have {day}",
-                        "what do I have {day}",
-                        "what do I have on {weekday}",
-                        "what lectures do i have on {weekday}",
+                        "what do I have on {day}",
+                        "what lectures do i have on {day}",
                         "what lectures do i have {day}",
                         "whats on my timetable {day}",
-                        "whats on my timetable on {weekday}"
+                        "whats on my timetable on {day}"
 
                     ],
                     "slots": [{
-                            "name": "day",
-                            "type": "AMAZON.DATE",
-                            "samples": []
-                        },
-                        {
-                            "name": "weekday",
-                            "type": "AMAZON.DayOfWeek",
-                            "samples": []
-                        }
-                    ]
+                        "name": "day",
+                        "type": "AMAZON.DATE",
+                        "samples": []
+                    }]
                 },
                 {
                     "name": "WeekOverviewIntent",
