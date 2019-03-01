@@ -10,6 +10,7 @@
 import logging
 import random
 import gettext
+import datetime
 
 from ask_sdk_core.skill_builder import SkillBuilder
 from ask_sdk_core.handler_input import HandlerInput
@@ -22,6 +23,7 @@ from ask_sdk_model import Response
 from ask_sdk_model.ui import SimpleCard
 
 from alexa import data, util
+
 
 day_slot_key = "DATE"
 day_slot = "day"
@@ -211,8 +213,8 @@ class YesMoreInfoIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.YesIntent")(handler_input) and
-                "restaurant" in session_attr)
+        return (is_intent_name("AMAZON.YesIntent")(handler_input)
+                and "restaurant" in session_attr)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -253,8 +255,8 @@ class NoMoreInfoIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.NoIntent")(handler_input) and
-                "restaurant" in session_attr)
+        return (is_intent_name("AMAZON.NoIntent")(handler_input)
+                and "restaurant" in session_attr)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -332,8 +334,8 @@ class ExitIntentHandler(AbstractRequestHandler):
 
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
-        return (is_intent_name("AMAZON.CancelIntent")(handler_input) or
-                is_intent_name("AMAZON.StopIntent")(handler_input))
+        return (is_intent_name("AMAZON.CancelIntent")(handler_input)
+                or is_intent_name("AMAZON.StopIntent")(handler_input))
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -356,11 +358,11 @@ class FallbackIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.FallbackIntent")(handler_input) or
-                ("restaurant" not in session_attr and (
-                    is_intent_name("AMAZON.YesIntent")(handler_input) or
-                    is_intent_name("AMAZON.NoIntent")(handler_input))
-                 ))
+        return (is_intent_name("AMAZON.FallbackIntent")(handler_input)
+                or ("restaurant" not in session_attr and (
+                    is_intent_name("AMAZON.YesIntent")(handler_input)
+                    or is_intent_name("AMAZON.NoIntent")(handler_input))
+                    ))
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
