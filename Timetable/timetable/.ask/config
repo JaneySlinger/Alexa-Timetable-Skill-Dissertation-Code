@@ -13,7 +13,7 @@
             "codeUri": "lambda/py/lambda_upload",
             "functionName": "ask-custom-timetable-default",
             "handler": "lambda_function.lambda_handler",
-            "revisionId": "6c11e6d4-9f0d-4cca-9be5-e0f14847d615",
+            "revisionId": "1c12e719-498a-4ecf-9862-938b7c0bd092",
             "runtime": "python3.6"
           }
         ],
