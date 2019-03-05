@@ -47,6 +47,8 @@ class LaunchRequestHandler(AbstractRequestHandler):
         # type: (HandlerInput) -> Response
         logger.info("In LaunchRequestHandler")
         _ = handler_input.attributes_manager.request_attributes["_"]
+        # set up TIMETABLE_DATA
+        util.process_ical_file()
 
         # logger.info(_("This is an untranslated message"))
 
@@ -128,7 +130,7 @@ class DetailedIndividualDayIntentHandler(AbstractRequestHandler):
                 handler_input.attributes_manager.session_attributes[day_slot_key] = day_to_search
 
         # find the event on that day
-                events = util.searchByDate(data.TIMETABLE_DATA, day_to_search)
+                events = util.searchByDate(util.TIMETABLE_DATA, day_to_search)
 
         # define how you want alexa to respond.
                 if not events:
@@ -215,8 +217,8 @@ class YesMoreInfoIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.YesIntent")(handler_input)
-                and "restaurant" in session_attr)
+        return (is_intent_name("AMAZON.YesIntent")(handler_input) and
+                "restaurant" in session_attr)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -257,8 +259,8 @@ class NoMoreInfoIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.NoIntent")(handler_input)
-                and "restaurant" in session_attr)
+        return (is_intent_name("AMAZON.NoIntent")(handler_input) and
+                "restaurant" in session_attr)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -336,8 +338,8 @@ class ExitIntentHandler(AbstractRequestHandler):
 
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
-        return (is_intent_name("AMAZON.CancelIntent")(handler_input)
-                or is_intent_name("AMAZON.StopIntent")(handler_input))
+        return (is_intent_name("AMAZON.CancelIntent")(handler_input) or
+                is_intent_name("AMAZON.StopIntent")(handler_input))
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -360,11 +362,11 @@ class FallbackIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.FallbackIntent")(handler_input)
-                or ("restaurant" not in session_attr and (
-                    is_intent_name("AMAZON.YesIntent")(handler_input)
-                    or is_intent_name("AMAZON.NoIntent")(handler_input))
-                    ))
+        return (is_intent_name("AMAZON.FallbackIntent")(handler_input) or
+                ("restaurant" not in session_attr and (
+                    is_intent_name("AMAZON.YesIntent")(handler_input) or
+                    is_intent_name("AMAZON.NoIntent")(handler_input))
+                 ))
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
