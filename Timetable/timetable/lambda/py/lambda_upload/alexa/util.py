@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import requests
+import datetime
+import icalendar
 from ask_sdk_model import IntentRequest
 from typing import Union, Dict, List
 
@@ -77,3 +79,7 @@ def searchByDate(timetableData, date):
     # search for the date in the list of events
     # returns unsorted list, may need to sort by time of day
     return [event for event in timetableData if event['date'] == date]
+
+
+def findNextLecture(timetableData):
+    '''Finds and returns the event that is next to happen'''
