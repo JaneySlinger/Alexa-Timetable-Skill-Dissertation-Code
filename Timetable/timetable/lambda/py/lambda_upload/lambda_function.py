@@ -85,6 +85,8 @@ class BeforeLectureIntentHandler(AbstractRequestHandler):
         # type: (HandlerInput) -> Response
         logger.info("In BeforeLectureIntentHandler")
 
+        # testing whether the imports work
+        current_datetime = datetime.datetime.now()
         attribute_manager = handler_input.attributes_manager
         session_attr = attribute_manager.session_attributes
 
