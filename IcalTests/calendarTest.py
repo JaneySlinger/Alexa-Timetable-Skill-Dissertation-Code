@@ -121,10 +121,24 @@ def extractData(component):
     # print("\n")
 
     TIMETABLE_DATA.append({"module": module_name, "type": event_type, "lecturer": lecturer, "code": module_code,
-                           "location_campus": campus, "location_building": building, "location_room": room, "date": date, "time": time, "duration_hours": hour_duration, "duration_minutes": minute_duration})
+                           "location_campus": campus, "location_building": building, "location_room": room, "start_time": start_time, "date": date, "time": time, "duration_hours": hour_duration, "duration_minutes": minute_duration})
+
+
+def printNextLecture():
+    #currentTime = datetime(2019, 3, 8, 13, 30)
+    currentTime = datetime.now()
+    currentTime.replace(tzinfo=None)
+    print(currentTime)
+    # information to convert to a naive datetime taken from https://stackoverflow.com/questions/15307623/cant-compare-naive-and-aware-datetime-now-challenge-datetime-end/15307743
+    # find all lectures that take place after the current date and then take the first one as it will be the next lecture
+    future_lectures = [
+        event for event in TIMETABLE_DATA if event['start_time'].replace(tzinfo=None) > currentTime]
+    print(future_lectures[0])
+    return future_lectures[0]
 
 
 printWholeCalendar()
 # printSelectModule("Graphics")
 # printTodayTimetable()
-print(TIMETABLE_DATA)
+# print(TIMETABLE_DATA)
+printNextLecture()

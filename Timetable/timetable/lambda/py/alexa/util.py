@@ -156,14 +156,12 @@ def searchByDate(date):
 
 def findNextLecture():
     '''Finds and returns the event that is next to happen'''
+    # currentTime = datetime(2019, 3, 8, 13, 30)  #provided for testing purposes
     # get the current time
-    #currentTime = datetime.now()
-    currentTime = datetime(2019, 3, 7, 12)
+    currentTime = datetime.now()
     currentTime.replace(tzinfo=None)
     # information to convert to a naive datetime taken from https://stackoverflow.com/questions/15307623/cant-compare-naive-and-aware-datetime-now-challenge-datetime-end/15307743
-    i = 0
-    while TIMETABLE_DATA[i]['start_time'].replace(tzinfo=None) < currentTime:
-        i += 1
-
-    next_lecture = TIMETABLE_DATA[i + 1]
-    return next_lecture
+    # find all lectures that take place after the current date and then take the first one as it will be the next lecture
+    future_lectures = [
+        event for event in TIMETABLE_DATA if event['start_time'].replace(tzinfo=None) > currentTime]
+    return future_lectures[0]

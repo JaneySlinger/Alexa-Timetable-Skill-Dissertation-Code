@@ -79,9 +79,6 @@ def extractData(component):
     TIMETABLE_DATA.append({"module": module_name, "type": event_type, "lecturer": lecturer, "code": module_code,
                            "location_campus": campus, "location_building": building, "location_room": room, "start_time": start_time, "date": date, "time": time, "duration_hours": hour_duration, "duration_minutes": minute_duration})
 
-    # sort the list by the time of the lecture
-    #TIMETABLE_DATA = sorted(unsorted_timetable, key=lambda k: k['start_time'])
-
 
 def get_restaurants_by_meal(city_data, meal_type):
     """Return a restaurant list based on meal type."""
@@ -159,13 +156,12 @@ def searchByDate(date):
 
 def findNextLecture():
     '''Finds and returns the event that is next to happen'''
+    # currentTime = datetime(2019, 3, 8, 13, 30)  #provided for testing purposes
     # get the current time
-    #currentTime = datetime.now()
-    currentTime = datetime(2019, 3, 7, 12)
+    currentTime = datetime.now()
     currentTime.replace(tzinfo=None)
-    i = 0
-    while TIMETABLE_DATA[i]['start_time'].replace(tzinfo=None) < currentTime:
-        i += 1
-
-    next_lecture = TIMETABLE_DATA[i + 1]
-    return next_lecture
+    # information to convert to a naive datetime taken from https://stackoverflow.com/questions/15307623/cant-compare-naive-and-aware-datetime-now-challenge-datetime-end/15307743
+    # find all lectures that take place after the current date and then take the first one as it will be the next lecture
+    future_lectures = [
+        event for event in TIMETABLE_DATA if event['start_time'].replace(tzinfo=None) > currentTime]
+    return future_lectures[0]

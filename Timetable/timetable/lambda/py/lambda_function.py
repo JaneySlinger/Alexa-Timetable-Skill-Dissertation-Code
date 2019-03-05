@@ -96,7 +96,7 @@ class BeforeLectureIntentHandler(AbstractRequestHandler):
         building = lecture['location_building']
         date = lecture['date']
 
-        speech = ("Your next lecture is {} in room {} in the {} building. {}").format(
+        speech = ("Your next lecture is {} in room {} in the {} building.").format(
             module, room, building, date)
 
         handler_input.response_builder.speak(speech).ask(speech)
