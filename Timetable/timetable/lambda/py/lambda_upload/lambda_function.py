@@ -106,16 +106,16 @@ class BeforeLectureIntentHandler(AbstractRequestHandler):
         return handler_input.response_builder.response
 
 
-class DetailedIndividualDayIntentHandler(AbstractRequestHandler):
-    """Handler for DetailedIndividualDayIntent."""
+class WeekOverviewOrDetailedDayIntentHandler(AbstractRequestHandler):
+    """Handler for WeekOverviewOrDetailedDayIntent."""
 
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
-        return is_intent_name("DetailedIndividualDayIntent")(handler_input)
+        return is_intent_name("WeekOverviewOrDetailedDayIntent")(handler_input)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
-        logger.info("In DetailedIndividualDayIntentHandler")
+        logger.info("In WeekOverviewOrDetailedDayIntentHandler")
 
         # the example shortened some of the lines of code by assigning a variable to store the result of some commonly used functions. Maybe use this but may just leave it as the functions as could be easier to read.
         attribute_manager = handler_input.attributes_manager
@@ -128,103 +128,63 @@ class DetailedIndividualDayIntentHandler(AbstractRequestHandler):
             if slots[day_slot].value != None:
                 logger.info("Inside the day_slot section")
 
-                day_to_search = slots[day_slot].value
+                value_to_search = slots[day_slot].value
 
                # save the value of the slot to return later. Might just be able to output it.
-                handler_input.attributes_manager.session_attributes[day_slot_key] = day_to_search
+                handler_input.attributes_manager.session_attributes[day_slot_key] = value_to_search
 
-        # find the event on that day
-                events = util.searchByDate(day_to_search)
+                if("W" in value_to_search):
+                    # then the slot is a week value
+                    # find the event on that day
+                    week_events = util.findLecturesOnWeek(value_to_search)
 
-        # define how you want alexa to respond.
-                if not events:
-                    # if there are no lectures on that day
-                    speech = ("You have no events on {}").format(day_to_search)
+                    # define how you want alexa to respond.
+                    if not week_events:
+                        # if there are no lectures that week
+                        speech = ("You have no events {}").format(
+                            value_to_search)
+                    else:
+                        speech = ("You have ")
+                        for i in range(len(week_events) - 1):
+                            speech += ("{} lectures on {} between {} and {}, ").format(
+                                week_events[i]["num_of_lectures"], week_events[i]["weekday"], week_events[i]["day_start"], week_events[i]["day_end"])
+                        last_item_index = len(week_events) - 1
+                        speech += ("and {} lectures on {} between {} and {}.").format(week_events[last_item_index]["num_of_lectures"],
+                                                                                      week_events[last_item_index]["weekday"],
+                                                                                      week_events[last_item_index]["day_start"],
+                                                                                      week_events[last_item_index]["day_end"])
                 else:
-                    speech = ("On {} you have ").format(day_to_search)
-                    for i in range(len(events) - 1):
-                        speech += ("a {} hour {} {} at {}, ").format(
-                            events[i]["duration_hours"], events[i]["module"], events[i]["type"], events[i]["time"])
-                    # speech = ("{} you have a {} hour {} {} at {}").format(day_to_search,events[0]["duration_hours"], events[0]["module"], events[0]["type"], events[0]["time"])
-                    last_item_index = len(events) - 1
-                    speech += ("and a {} hour {} {} at {}").format(events[last_item_index]["duration_hours"],
-                                                                   events[last_item_index]["module"],
-                                                                   events[last_item_index]["type"],
-                                                                   events[last_item_index]["time"])
+                    # the slot is a date value for an individual day
+                    events = util.searchByDate(value_to_search)
+
+                    # define how you want alexa to respond.
+                    if not events:
+                        # if there are no lectures on that day
+                        speech = ("You have no events on {}").format(
+                            value_to_search)
+                    else:
+                        speech = ("On {} you have ").format(value_to_search)
+                        for i in range(len(events) - 1):
+                            speech += ("a {} hour {} {} at {}, ").format(
+                                events[i]["duration_hours"], events[i]["module"], events[i]["type"], events[i]["time"])
+                        last_item_index = len(events) - 1
+                        speech += ("and a {} hour {} {} at {}").format(events[last_item_index]["duration_hours"],
+                                                                       events[last_item_index]["module"],
+                                                                       events[last_item_index]["type"],
+                                                                       events[last_item_index]["time"])
             else:
-                speech = "I'm not sure what day you asked about. Please try again."
+                speech = "I'm not sure what day or week you asked about. Please try again."
             reprompt = ("You can ask about your timetable today by saying, "
                         "whats on my timetable today")
         else:
             # the slot was empty
             logger.info("In the else section")
-            speech = "I'm not sure what day you asked about. Please try again."
-            reprompt = ("I'm not sure what day you asked about. "
-                        "You can ask about your timetable today by saying, "
-                        "whats on my timetable today")
-
-        handler_input.response_builder.speak(speech).ask(reprompt)
-        return handler_input.response_builder.response
-
-
-class WeekOverviewIntentHandler(AbstractRequestHandler):
-    """Handler for WeekOverviewIntent."""
-
-    def can_handle(self, handler_input):
-        # type: (HandlerInput) -> bool
-        return is_intent_name("WeekOverviewIntent")(handler_input)
-
-    def handle(self, handler_input):
-        # type: (HandlerInput) -> Response
-        logger.info("In WeekOverviewIntentHandler")
-
-        attribute_manager = handler_input.attributes_manager
-        session_attr = attribute_manager.session_attributes
-
-        # access the slot value for the day to be searched
-        slots = handler_input.request_envelope.request.intent.slots
-        if week_slot in slots:
-            # check if the value in the slot was valid.
-            if slots[week_slot].value != None:
-                logger.info("Inside the week_slot section")
-
-                week_to_search = str(slots[week_slot].value)
-
-               # save the value of the slot to return later. Might just be able to output it.
-                #handler_input.attributes_manager.session_attributes[week_slot_key] = week_to_search
-
-        # find the event on that day
-                logger.info(week_to_search)
-                week_events = util.findLecturesOnWeek(week_to_search)
-
-        # define how you want alexa to respond.
-                if not week_events:
-                    # if there are no lectures that week
-                    speech = ("You have no events {}").format(week_to_search)
-                else:
-                    speech = ("{} you have ").format(week_to_search)
-                    for i in range(len(week_events) - 1):
-                        speech += ("{} lectures on {} between {} and {}, ").format(
-                            week_events[i]["num_of_lectures"], week_events[i]["weekday"], week_events[i]["day_start"], week_events[i]["day_end"])
-                    # speech = ("{} you have a {} hour {} {} at {}").format(day_to_search,events[0]["duration_hours"], events[0]["module"], events[0]["type"], events[0]["time"])
-                    last_item_index = len(week_events) - 1
-                    speech += ("and {} lectures on {} between {} and {}.").format(week_events[last_item_index]["num_of_lectures"],
-                                                                                  week_events[last_item_index]["weekday"],
-                                                                                  week_events[last_item_index]["day_start"],
-                                                                                  week_events[last_item_index]["day_end"])
-            else:
-                speech = "I'm not sure which week you asked about. Please try again."
-            reprompt = ("You can ask about your timetable this week by saying, "
-                        "whats on my timetable this week")
-        else:
-            # the slot was empty
-            logger.info("In the else section")
-            speech = "I'm not sure which week you asked about. Please try again."
-            reprompt = ("I'm not sure which week you asked about. "
+            speech = "I'm not sure what day or week you asked about. Please try again."
+            reprompt = ("I'm not sure what day or week you asked about. "
                         "You can ask about your timetable this week by saying, "
                         "whats on my timetable this week")
 
-        handler_input.response_builder.speak(speech).ask(speech)
+        handler_input.response_builder.speak(speech).ask(reprompt)
         return handler_input.response_builder.response
 
 
@@ -258,8 +218,8 @@ class YesMoreInfoIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.YesIntent")(handler_input) and
-                "restaurant" in session_attr)
+        return (is_intent_name("AMAZON.YesIntent")(handler_input)
+                and "restaurant" in session_attr)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -300,8 +260,8 @@ class NoMoreInfoIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.NoIntent")(handler_input)
-                and "restaurant" in session_attr)
+        return (is_intent_name("AMAZON.NoIntent")(handler_input) and
+                "restaurant" in session_attr)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -379,8 +339,8 @@ class ExitIntentHandler(AbstractRequestHandler):
 
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
-        return (is_intent_name("AMAZON.CancelIntent")(handler_input)
-                or is_intent_name("AMAZON.StopIntent")(handler_input))
+        return (is_intent_name("AMAZON.CancelIntent")(handler_input) or
+                is_intent_name("AMAZON.StopIntent")(handler_input))
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -403,11 +363,11 @@ class FallbackIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.FallbackIntent")(handler_input)
-                or ("restaurant" not in session_attr and (
-                    is_intent_name("AMAZON.YesIntent")(handler_input)
-                    or is_intent_name("AMAZON.NoIntent")(handler_input))
-                    ))
+        return (is_intent_name("AMAZON.FallbackIntent")(handler_input) or
+                ("restaurant" not in session_attr and (
+                    is_intent_name("AMAZON.YesIntent")(handler_input) or
+                    is_intent_name("AMAZON.NoIntent")(handler_input))
+                 ))
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -461,8 +421,7 @@ class LocalizationInterceptor(AbstractRequestInterceptor):
 sb.add_request_handler(LaunchRequestHandler())
 sb.add_request_handler(AboutIntentHandler())
 sb.add_request_handler(BeforeLectureIntentHandler())
-sb.add_request_handler(DetailedIndividualDayIntentHandler())
-sb.add_request_handler(WeekOverviewIntentHandler())
+sb.add_request_handler(WeekOverviewOrDetailedDayIntentHandler())
 sb.add_request_handler(NextLectureIntentHandler())
 sb.add_request_handler(YesMoreInfoIntentHandler())
 sb.add_request_handler(NoMoreInfoIntentHandler())
