@@ -28,6 +28,9 @@ from alexa import data, util
 day_slot_key = "DATE"
 day_slot = "day"
 
+week_slot_key = "DATE"
+week_slot = "week"
+
 # Skill Builder object
 sb = SkillBuilder()
 
@@ -177,6 +180,20 @@ class WeekOverviewIntentHandler(AbstractRequestHandler):
 
         attribute_manager = handler_input.attributes_manager
         session_attr = attribute_manager.session_attributes
+
+        # test what the slot value is
+        slots = handler_input.request_envelope.request.intent.slots
+        if week_slot in slots:
+            # check if the value in the slot was valid.
+            if slots[week_slot].value != None:
+                logger.info("Inside the week_slot section")
+
+                week_to_search = slots[week_slot].value
+                logger.info(type(week_to_search))
+                logger.info(week_to_search)
+
+               # save the value of the slot to return later. Probably don't need it
+                handler_input.attributes_manager.session_attributes[week_slot_key] = week_to_search
 
         restaurant = random.choice(util.get_restaurants_by_meal(
             data.CITY_DATA, "lunch"))
