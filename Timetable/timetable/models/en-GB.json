@@ -41,11 +41,16 @@
                 {
                     "name": "WeekOverviewIntent",
                     "samples": [
-                        "what lectures do i have this week",
-                        "whats on my timetable this week",
-                        "what do i have this week"
+                        "what lectures do i have {week}",
+                        "whats on my timetable {week}",
+                        "what do i have {week}",
+                        "test {week}"
                     ],
-                    "slots": []
+                    "slots": [{
+                        "name": "week",
+                        "type": "AMAZON.DATE",
+                        "samples": []
+                    }]
                 },
                 {
                     "name": "NextLectureIntent",

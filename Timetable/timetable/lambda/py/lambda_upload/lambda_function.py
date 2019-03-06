@@ -181,25 +181,48 @@ class WeekOverviewIntentHandler(AbstractRequestHandler):
         attribute_manager = handler_input.attributes_manager
         session_attr = attribute_manager.session_attributes
 
-        # test what the slot value is
+        # access the slot value for the day to be searched
         slots = handler_input.request_envelope.request.intent.slots
         if week_slot in slots:
             # check if the value in the slot was valid.
             if slots[week_slot].value != None:
                 logger.info("Inside the week_slot section")
 
-                week_to_search = slots[week_slot].value
-                logger.info(type(week_to_search))
+                week_to_search = str(slots[week_slot].value)
+
+               # save the value of the slot to return later. Might just be able to output it.
+                #handler_input.attributes_manager.session_attributes[week_slot_key] = week_to_search
+
+        # find the event on that day
                 logger.info(week_to_search)
+                week_events = util.findLecturesOnWeek(week_to_search)
 
-               # save the value of the slot to return later. Probably don't need it
-                handler_input.attributes_manager.session_attributes[week_slot_key] = week_to_search
-
-        restaurant = random.choice(util.get_restaurants_by_meal(
-            data.CITY_DATA, "lunch"))
-        session_attr["restaurant"] = restaurant["name"]
-        speech = ("Lunch time! Here is a good spot. {}. Would you "
-                  "like to hear more?").format(restaurant["name"])
+        # define how you want alexa to respond.
+                if not week_events:
+                    # if there are no lectures that week
+                    speech = ("You have no events {}").format(week_to_search)
+                else:
+                    speech = ("{} you have ").format(week_to_search)
+                    for i in range(len(week_events) - 1):
+                        speech += ("{} lectures on {} between {} and {}, ").format(
+                            week_events[i]["num_of_lectures"], week_events[i]["weekday"], week_events[i]["day_start"], week_events[i]["day_end"])
+                    # speech = ("{} you have a {} hour {} {} at {}").format(day_to_search,events[0]["duration_hours"], events[0]["module"], events[0]["type"], events[0]["time"])
+                    last_item_index = len(week_events) - 1
+                    speech += ("and {} lectures on {} between {} and {}.").format(week_events[last_item_index]["num_of_lectures"],
+                                                                                  week_events[last_item_index]["weekday"],
+                                                                                  week_events[last_item_index]["day_start"],
+                                                                                  week_events[last_item_index]["day_end"])
+            else:
+                speech = "I'm not sure which week you asked about. Please try again."
+            reprompt = ("You can ask about your timetable this week by saying, "
+                        "whats on my timetable this week")
+        else:
+            # the slot was empty
+            logger.info("In the else section")
+            speech = "I'm not sure which week you asked about. Please try again."
+            reprompt = ("I'm not sure which week you asked about. "
+                        "You can ask about your timetable this week by saying, "
+                        "whats on my timetable this week")
 
         handler_input.response_builder.speak(speech).ask(speech)
         return handler_input.response_builder.response
@@ -235,8 +258,8 @@ class YesMoreInfoIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.YesIntent")(handler_input)
-                and "restaurant" in session_attr)
+        return (is_intent_name("AMAZON.YesIntent")(handler_input) and
+                "restaurant" in session_attr)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -277,8 +300,8 @@ class NoMoreInfoIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.NoIntent")(handler_input) and
-                "restaurant" in session_attr)
+        return (is_intent_name("AMAZON.NoIntent")(handler_input)
+                and "restaurant" in session_attr)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -356,8 +379,8 @@ class ExitIntentHandler(AbstractRequestHandler):
 
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
-        return (is_intent_name("AMAZON.CancelIntent")(handler_input) or
-                is_intent_name("AMAZON.StopIntent")(handler_input))
+        return (is_intent_name("AMAZON.CancelIntent")(handler_input)
+                or is_intent_name("AMAZON.StopIntent")(handler_input))
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -380,11 +403,11 @@ class FallbackIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.FallbackIntent")(handler_input) or
-                ("restaurant" not in session_attr and (
-                    is_intent_name("AMAZON.YesIntent")(handler_input) or
-                    is_intent_name("AMAZON.NoIntent")(handler_input))
-                 ))
+        return (is_intent_name("AMAZON.FallbackIntent")(handler_input)
+                or ("restaurant" not in session_attr and (
+                    is_intent_name("AMAZON.YesIntent")(handler_input)
+                    or is_intent_name("AMAZON.NoIntent")(handler_input))
+                    ))
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response

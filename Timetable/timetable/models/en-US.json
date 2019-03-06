@@ -43,7 +43,8 @@
                     "samples": [
                         "what lectures do i have {week}",
                         "whats on my timetable {week}",
-                        "what do i have {week}"
+                        "what do i have {week}",
+                        "test {week}"
                     ],
                     "slots": [{
                         "name": "week",
