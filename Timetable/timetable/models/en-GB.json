@@ -20,7 +20,7 @@
                     "slots": []
                 },
                 {
-                    "name": "DetailedIndividualDayIntent",
+                    "name": "WeekOverviewOrDetailedDayIntent",
                     "samples": [
                         "tell me what lectures i have {day}",
                         "tell me what lectures I have on {day}",
@@ -29,7 +29,7 @@
                         "what lectures do i have on {day}",
                         "what lectures do i have {day}",
                         "whats on my timetable {day}",
-                        "whats on my timetable on {day}"
+                        "whats on my timetable on {day}",
 
                     ],
                     "slots": [{
@@ -37,15 +37,6 @@
                         "type": "AMAZON.DATE",
                         "samples": []
                     }]
-                },
-                {
-                    "name": "WeekOverviewIntent",
-                    "samples": [
-                        "what lectures do i have this week",
-                        "whats on my timetable this week",
-                        "what do i have this week"
-                    ],
-                    "slots": []
                 },
                 {
                     "name": "NextLectureIntent",
