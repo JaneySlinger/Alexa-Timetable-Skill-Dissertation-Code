@@ -1,8 +1,83 @@
 # -*- coding: utf-8 -*-
 
 import requests
+from datetime import datetime, date, timedelta
+from icalendar import Calendar, Event, vText
 from ask_sdk_model import IntentRequest
 from typing import Union, Dict, List
+
+TIMETABLE_DATA = []
+
+
+def process_ical_file():
+    '''read the calendar file'''
+    icalFile = open('calendar.ics', 'rb')
+    calendar_to_parse = Calendar.from_ical(icalFile.read())
+    for component in calendar_to_parse.walk():
+        if component.name == "VEVENT":
+            extractData(component)
+    icalFile.close()
+
+
+def extractData(component):
+    '''extract the data from the component and store/print '''
+    # string in form: "MODULE NAME - TYPE"
+    # split the string before and after the "-"
+    summary = component.get('summary')
+    # split function referenced from python documentation
+    # https://docs.python.org/3/library/stdtypes.html#str.split
+    separated_words = summary.split(" - ", 1)
+    module_name = separated_words[0]
+    event_type = separated_words[1]
+
+    # description in form:
+    # "Taught by: Lecturer name
+    # Blank Line
+    # Module Code: COMP/3011/01"
+    # cut the /01 off the end as it is the same for all of them and not part of the code
+    # then the last time updated but I don't think I need that
+    description = component.get('description')
+    # splitlines found on python documentation
+    # https://docs.python.org/3/library/stdtypes.html#str.splitlines
+    lines_of_description = description.splitlines()
+    lecturer = lines_of_description[0].split(": ")[1]
+    # may want to reverse the order so it reads Dr M Pound rather than Pound M Dr
+    # would do this by splitting the string, reordering the resulting words, and joining
+
+    module_code_raw = lines_of_description[2].split(
+        ": ")[1]  # still has the /01 on the end
+    # split into COMP 3006 and 01 and then ignore the 01 at the end
+    partial_code = module_code_raw.split("/")
+    if(len(partial_code) > 1):
+        # The Dissertation module does not have a module code in the timetable file.
+        module_code = partial_code[0] + partial_code[1]
+    else:
+        module_code = "NONE"
+
+    # separate and format the location value.
+    location = (component.get('location')).split("-")
+    campus = location[0]
+    building = location[1]
+    # may need to remove . and + from some room codes
+    room = location[2]
+
+    # the .dt converts the time to datetime object so that it can be read and processed more easily
+    # example of this taken from https://stackoverflow.com/questions/26238835/parse-dates-with-icalendar-and-compare-to-python-datetime
+    start_time = component['DTSTART'].dt
+    # Store the date as YYYY-MM-DD so it matches AMAZON.DATE format
+    date = "{:%Y-%m-%d}".format(start_time)
+
+    # Store the time as HH:MM so that it matches the AMAZON.TIME format
+    time = "{:%H:%M}".format(start_time)
+
+    # Calculate the duration and convert to hours and minutes as a string
+    end_time = component['DTEND'].dt
+    duration = str(end_time - start_time).split(":")
+    hour_duration = duration[0]
+    minute_duration = duration[1]
+
+    TIMETABLE_DATA.append({"module": module_name, "type": event_type, "lecturer": lecturer, "code": module_code,
+                           "location_campus": campus, "location_building": building, "location_room": room, "start_time": start_time, "date": date, "time": time, "duration_hours": hour_duration, "duration_minutes": minute_duration})
 
 
 def get_restaurants_by_meal(city_data, meal_type):
@@ -69,11 +144,24 @@ def get_resolved_value(request, slot_name):
         return None
 
 
-def searchByDate(timetableData, date):
+def searchByDate(date):
     '''search for events taking place on a certain date'''
     # returns a list of all the events matching the date
     # takes date, a string in the format "YYYY-MM-DD", and the timetable data
 
     # search for the date in the list of events
     # returns unsorted list, may need to sort by time of day
-    return [event for event in timetableData if event['date'] == date]
+    return [event for event in TIMETABLE_DATA if event['date'] == date]
+
+
+def findNextLecture():
+    '''Finds and returns the event that is next to happen'''
+    # currentTime = datetime(2019, 3, 8, 13, 30)  #provided for testing purposes
+    # get the current time
+    currentTime = datetime.now()
+    currentTime.replace(tzinfo=None)
+    # information to convert to a naive datetime taken from https://stackoverflow.com/questions/15307623/cant-compare-naive-and-aware-datetime-now-challenge-datetime-end/15307743
+    # find all lectures that take place after the current date and then take the first one as it will be the next lecture
+    future_lectures = [
+        event for event in TIMETABLE_DATA if event['start_time'].replace(tzinfo=None) > currentTime]
+    return future_lectures[0]
