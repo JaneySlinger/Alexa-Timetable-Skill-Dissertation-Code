@@ -10,7 +10,7 @@
 import logging
 import random
 import gettext
-import datetime
+from datetime import datetime, timedelta
 
 from ask_sdk_core.skill_builder import SkillBuilder
 from ask_sdk_core.handler_input import HandlerInput
@@ -28,8 +28,8 @@ from alexa import data, util
 day_slot_key = "DATE"
 day_slot = "day"
 
-week_slot_key = "DATE"
-week_slot = "week"
+first_slot_key = "DATE"
+first_slot = "first_day"
 
 # Skill Builder object
 sb = SkillBuilder()
@@ -218,8 +218,8 @@ class YesMoreInfoIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.YesIntent")(handler_input)
-                and "restaurant" in session_attr)
+        return (is_intent_name("AMAZON.YesIntent")(handler_input) and
+                "restaurant" in session_attr)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -260,8 +260,8 @@ class NoMoreInfoIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.NoIntent")(handler_input) and
-                "restaurant" in session_attr)
+        return (is_intent_name("AMAZON.NoIntent")(handler_input)
+                and "restaurant" in session_attr)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -276,6 +276,8 @@ class NoMoreInfoIntentHandler(AbstractRequestHandler):
 
 class FirstLectureIntentHandler(AbstractRequestHandler):
     """Handler for FirstLectureIntent."""
+    # take a slot of a date (usually today or tomorrow)
+    # return the time of the first lecture and the time until that lecture
 
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
@@ -284,21 +286,48 @@ class FirstLectureIntentHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
         logger.info("In FirstLectureIntentHandler")
-        distance = util.get_resolved_value(
-            handler_input.request_envelope.request, "distance")
-        if distance is None:
-            distance = 200
+        attribute_manager = handler_input.attributes_manager
+        session_attr = attribute_manager.session_attributes
 
-        attraction = random.choice(util.get_attractions_by_distance(
-            data.CITY_DATA, distance))
-        speech = "Try {}, which is {}. {}. Have fun!!".format(
-            attraction["name"],
-            "right downtown" if attraction["distance"] == "0"
-            else "{} miles away".format(attraction["distance"]),
-            attraction["description"])
+        # access the slot value to be searched
+        slots = handler_input.request_envelope.request.intent.slots
+        if first_slot in slots:
+            # check if the value in the slot is valid
+            if slots[first_slot].value != None:
+                logger.info("Inside the first_slot section")
+                day_to_search = slots[first_slot].value
 
-        handler_input.response_builder.speak(speech).set_should_end_session(
-            True)
+                # get the first lecture of the day
+                events_on_day = util.searchByDate(day_to_search)
+
+                if not events_on_day:
+                    speech = ("You don't have any lectures {}").format(
+                        day_to_search)
+                else:
+                    speech = ("Your first lecture {} is {} at {}. ").format(
+                        day_to_search, events_on_day[0]["module"], events_on_day[0]["time"])
+                    # Calculate how long it is until the lecture starts
+                    time_until_lecture = util.timeUntilLecture(
+                        events_on_day[0])
+                    if(time_until_lecture != -1):
+                        # if the lecture is not in the past
+                        speech += ("That is in {} hours.").format(time_until_lecture)
+                    else:
+                        speech += ("That is in the past.")
+
+            else:
+                speech = "I'm not sure what day you asked about. Please try again."
+            reprompt = ("You can ask about your first lecture today by saying, "
+                        "whats my first lecture today")
+        else:
+            # the slot was empty
+            logger.info("In the else section")
+            speech = "I'm not sure what day you asked about. Please try again."
+            reprompt = ("I'm not sure what day you asked about. "
+                        "You can ask about your first lecture today or tomorrow by saying, "
+                        "whats my first lecture today?")
+
+        handler_input.response_builder.speak(speech).ask(reprompt)
         return handler_input.response_builder.response
 
 
@@ -339,8 +368,8 @@ class ExitIntentHandler(AbstractRequestHandler):
 
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
-        return (is_intent_name("AMAZON.CancelIntent")(handler_input) or
-                is_intent_name("AMAZON.StopIntent")(handler_input))
+        return (is_intent_name("AMAZON.CancelIntent")(handler_input)
+                or is_intent_name("AMAZON.StopIntent")(handler_input))
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -363,11 +392,11 @@ class FallbackIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.FallbackIntent")(handler_input) or
-                ("restaurant" not in session_attr and (
-                    is_intent_name("AMAZON.YesIntent")(handler_input) or
-                    is_intent_name("AMAZON.NoIntent")(handler_input))
-                 ))
+        return (is_intent_name("AMAZON.FallbackIntent")(handler_input)
+                or ("restaurant" not in session_attr and (
+                    is_intent_name("AMAZON.YesIntent")(handler_input)
+                    or is_intent_name("AMAZON.NoIntent")(handler_input))
+                    ))
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -423,9 +452,9 @@ sb.add_request_handler(AboutIntentHandler())
 sb.add_request_handler(BeforeLectureIntentHandler())
 sb.add_request_handler(WeekOverviewOrDetailedDayIntentHandler())
 sb.add_request_handler(NextLectureIntentHandler())
+sb.add_request_handler(FirstLectureIntentHandler())
 sb.add_request_handler(YesMoreInfoIntentHandler())
 sb.add_request_handler(NoMoreInfoIntentHandler())
-sb.add_request_handler(FirstLectureIntentHandler())
 sb.add_request_handler(HelpIntentHandler())
 sb.add_request_handler(FallbackIntentHandler())
 sb.add_request_handler(ExitIntentHandler())

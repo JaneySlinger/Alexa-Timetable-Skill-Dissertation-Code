@@ -52,26 +52,20 @@
                 {
                     "name": "FirstLectureIntent",
                     "samples": [
-                        "when and what is my first lecture {day}",
-                        "whats my first lecture {day}",
-                        "whats my first lecture on {weekday}",
-                        "tell me about my first lecture {day}",
-                        "what time do i need to be on campus {day}",
-                        "what time do i need to be on campus on {weekday}",
-                        "what time do lectures start on {weekday}",
-                        "what time do lectures start {day}"
+                        "when and what is my first lecture {first_day}",
+                        "whats my first lecture {first_day}",
+                        "whats my first lecture on {first_day}",
+                        "tell me about my first lecture {first_day}",
+                        "what time do i need to be on campus {first_day}",
+                        "what time do i need to be on campus on {first_day}",
+                        "what time do lectures start on {first_day}",
+                        "what time do lectures start {first_day}"
                     ],
                     "slots": [{
-                            "name": "day",
-                            "type": "AMAZON.DATE",
-                            "samples": []
-                        },
-                        {
-                            "name": "weekday",
-                            "type": "AMAZON.DayOfWeek",
-                            "samples": []
-                        }
-                    ]
+                        "name": "first_day",
+                        "type": "AMAZON.DATE",
+                        "samples": []
+                    }]
                 },
                 {
                     "name": "AMAZON.YesIntent",

@@ -220,7 +220,44 @@ def findLecturesOnWeek(week):
     return lectures_on_day
 
 
+def timeUntilLecture(lecture):
+    '''calculate the time until the given lecture from the current time'''
+    # this will not account for daylight savings time??
+    currentTime = datetime.now()
+    currentTime.replace(tzinfo=None)
+    lecture_time = lecture["start_time"].replace(
+        tzinfo=None)
+
+    if(lecture_time > currentTime):
+        time_until_lecture = lecture_time - currentTime
+        # print(time_until_lecture)
+        time_string = str(time_until_lecture)
+        if("days" in time_string):
+            split_days = time_string.split(",")
+            days = split_days[0]
+            time_string = split_days[1]
+            time = time_string.split(".")[0]
+            time = time.split(":")[0] + " hours and " + \
+                time.split(":")[1] + "minutes"
+            time_until_lecture = days + time
+        else:
+            # there are no days in the time
+            time_until_lecture = time_string.split(".")[0]
+            time_until_lecture = time_until_lecture.split(
+                ":")[0] + " hours and " + time_until_lecture.split(":")[1] + " minutes"
+
+        # print(time_until_lecture)
+        # print(type(time_until_lecture))
+        return time_until_lecture
+    else:
+        # if the event was in the past return -1
+        # print("-1")
+        return -1
+
+
 def convertToWeekday(date):
+    # if(date == date.today())
+    # needs checking for the today one
     weekday = date.isoweekday()
     if(weekday == 1):
         weekday = "monday"

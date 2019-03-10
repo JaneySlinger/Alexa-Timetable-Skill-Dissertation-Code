@@ -206,9 +206,40 @@ def convertToWeekday(date):
     return weekday
 
 
+def timeUntilLecture(date):
+    first_event = [
+        event for event in TIMETABLE_DATA if event['date'] == date]
+    currentTime = datetime.now()
+    currentTime.replace(tzinfo=None)
+
+    lecture_time = first_event[0]["start_time"].replace(
+        tzinfo=None)
+    if(lecture_time > currentTime):
+
+        time_until_lecture = lecture_time - currentTime
+        print(time_until_lecture)
+        time_string = str(time_until_lecture)
+        if("days" in time_string):
+            split_days = time_string.split(",")
+            days = split_days[0]
+            time_string = split_days[1]
+
+        time = time_string.split(".")[0]
+
+        time_until_lecture = days + time
+        print(time_until_lecture)
+        print(type(time_until_lecture))
+        return time_until_lecture
+    else:
+        # if the event was in the past return -1
+        print("-1")
+        return -1
+
+
 printWholeCalendar()
 # printSelectModule("Graphics")
 # printTodayTimetable()
 # print(TIMETABLE_DATA)
 # printNextLecture()
-printLecturesOnWeek("2019-W10")
+# printLecturesOnWeek("2019-W10")
+timeUntilLecture("2019-03-15")
