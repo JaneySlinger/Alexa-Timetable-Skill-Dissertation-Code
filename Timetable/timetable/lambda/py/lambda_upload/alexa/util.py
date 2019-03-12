@@ -24,6 +24,7 @@ def process_ical_file():
 
 
 def extractData(component):
+    #TIMETABLE_DATA = []
     '''extract the data from the component and store/print '''
     # string in form: "MODULE NAME - TYPE"
     # split the string before and after the "-"
@@ -174,6 +175,7 @@ def findNextLecture():
 def findLecturesOnWeek(week):
     '''find the number of lectures on each day in the given week and the start and end times'''
     lectures_on_day = []
+    week_events = []
     # returns either the list of days with lectures, or an empty list
 
     # week number is provided in the form "2019-W20" but needs to be converted to 20 as an int
@@ -244,7 +246,7 @@ def timeUntilLecture(lecture):
             # there are no days in the time
             time_until_lecture = time_string.split(".")[0]
             time_until_lecture = time_until_lecture.split(
-                ":")[0] + " hours and " + time_until_lecture.split(":")[1] + "minutes"
+                ":")[0] + " hours and " + time_until_lecture.split(":")[1] + " minutes"
 
         # print(time_until_lecture)
         # print(type(time_until_lecture))

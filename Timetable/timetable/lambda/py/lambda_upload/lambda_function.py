@@ -31,6 +31,9 @@ day_slot = "day"
 first_slot_key = "DATE"
 first_slot = "first_day"
 
+lecture_location_key = "LOCATION"
+
+
 # Skill Builder object
 sb = SkillBuilder()
 
@@ -94,13 +97,21 @@ class BeforeLectureIntentHandler(AbstractRequestHandler):
         session_attr = attribute_manager.session_attributes
 
         lecture = util.findNextLecture()
-        module = lecture['code']
-        room = lecture['location_room']
-        building = lecture['location_building']
-        date = lecture['date']
+        if not lecture:
+            # if there aren't any more lectures on the timetable
+            speech = ("There are no more lectures on your timetable.")
+        else:
+            # save the lecture to be used in the YesMoreInfoIntentHandler
+            handler_input.attributes_manager.session_attributes[lecture_location_key] = lecture
 
-        speech = ("Your next lecture is {} in room {} in the {} building.").format(
-            module, room, building, date)
+            module = lecture['code']
+            room = lecture['location_room']
+            building = lecture['location_building']
+            date = lecture['date']
+
+            speech = ("Your next lecture is {} in room {} in the {} building. Would you like more information about where that is?").format(
+                module, room, building, date)
+        # need to check whether it found a lecture
 
         handler_input.response_builder.speak(speech).ask(speech)
         return handler_input.response_builder.response
@@ -199,16 +210,18 @@ class NextLectureIntentHandler(AbstractRequestHandler):
         # type: (HandlerInput) -> Response
         logger.info("In NextLectureIntentHandler")
 
-        attribute_manager = handler_input.attributes_manager
-        session_attr = attribute_manager.session_attributes
+        # get the value of the next lecture to happen
+        next_lecture = util.findNextLecture()
 
-        restaurant = random.choice(util.get_restaurants_by_meal(
-            data.CITY_DATA, "dinner"))
-        session_attr["restaurant"] = restaurant["name"]
-        speech = ("Enjoy dinner at, {}. Would you "
-                  "like to hear more?").format(restaurant["name"])
+        if not next_lecture:
+            # if there are no lectures in the future
+            speech = ("There are no more lectures on your timetable.")
+        else:
+            time_until_lecture = util.timeUntilLecture(next_lecture)
+            speech = ("Your next lecture is {} at {}. That is in {}.").format(
+                next_lecture["module"], next_lecture["time"], time_until_lecture)
 
-        handler_input.response_builder.speak(speech).ask(speech)
+        handler_input.response_builder.speak(speech)
         return handler_input.response_builder.response
 
 
@@ -219,7 +232,7 @@ class YesMoreInfoIntentHandler(AbstractRequestHandler):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
         return (is_intent_name("AMAZON.YesIntent")(handler_input) and
-                "restaurant" in session_attr)
+                lecture_location_key in session_attr)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -230,22 +243,19 @@ class YesMoreInfoIntentHandler(AbstractRequestHandler):
         _ = attribute_manager.request_attributes["_"]
 
         # the restaurant name was stored as a session attribute in the earlier function
-        restaurant_name = session_attr["restaurant"]
-        restaurant_details = util.get_restaurants_by_name(
-            data.CITY_DATA, restaurant_name)
+        lecture = session_attr[lecture_location_key]
+        # restaurant_details = util.get_restaurants_by_name(
+        # data.CITY_DATA, restaurant_name)
 
-        speech = ("{} is located at {}, the phone number is {}, and the "
-                  "description is, {}. I have sent these details to the "
-                  "Alexa App on your phone.  Enjoy your meal! "
-                  "<say-as interpret-as='interjection'>bon appetit</say-as>"
-                  .format(restaurant_details["name"],
-                          restaurant_details["address"],
-                          restaurant_details["phone"],
-                          restaurant_details["description"]))
-        card_info = "{}\n{}\n{}, {}, {}\nphone: {}\n".format(
-            restaurant_details["name"], restaurant_details["address"],
-            data.CITY_DATA["city"], data.CITY_DATA["state"],
-            data.CITY_DATA["postcode"], restaurant_details["phone"])
+        speech = ("The {} building is on {} campus. Your lecture is in room {}. "
+                  "I have sent these details to the "
+                  "Alexa App on your phone."
+                  .format(lecture["location_building"],
+                          lecture["location_campus"],
+                          lecture["location_room"]))
+        card_info = "Room: {}\nBuilding: {}\nCampus: {}\n".format(
+            lecture["location_room"], lecture["location_building"],
+            lecture["location_campus"])
 
         handler_input.response_builder.speak(speech).set_card(
             SimpleCard(
@@ -261,14 +271,13 @@ class NoMoreInfoIntentHandler(AbstractRequestHandler):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
         return (is_intent_name("AMAZON.NoIntent")(handler_input)
-                and "restaurant" in session_attr)
+                and lecture_location_key in session_attr)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
         logger.info("In NoMoreInfoIntentHandler")
 
-        speech = ("Ok.  Enjoy your meal! "
-                  "<say-as interpret-as='interjection'>bon appetit</say-as>")
+        speech = ("Ok.")
         handler_input.response_builder.speak(speech).set_should_end_session(
             True)
         return handler_input.response_builder.response
@@ -311,7 +320,7 @@ class FirstLectureIntentHandler(AbstractRequestHandler):
                         events_on_day[0])
                     if(time_until_lecture != -1):
                         # if the lecture is not in the past
-                        speech += ("That is in {} hours.").format(time_until_lecture)
+                        speech += ("That is in {}.").format(time_until_lecture)
                     else:
                         speech += ("That is in the past.")
 
