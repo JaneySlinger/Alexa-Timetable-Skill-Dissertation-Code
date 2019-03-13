@@ -58,10 +58,10 @@ class LaunchRequestHandler(AbstractRequestHandler):
             logger.info("Setting up timetable data")
             util.process_ical_file()
 
-        speech = _(data.WELCOME)
-        speech += " " + _(data.HELP)
+        speech = (data.WELCOME)
+        speech += " " + (data.HELP)
         handler_input.response_builder.speak(speech)
-        handler_input.response_builder.ask(_(
+        handler_input.response_builder.ask((
             data.GENERIC_REPROMPT))
         return handler_input.response_builder.response
 
@@ -84,7 +84,7 @@ class AboutIntentHandler(AbstractRequestHandler):
         _ = handler_input.attributes_manager.request_attributes["_"]
 
         handler_input.response_builder.speak(
-            _(data.ABOUT)).ask(_(data.GENERIC_REPROMPT))
+            (data.ABOUT)).ask((data.GENERIC_REPROMPT))
         return handler_input.response_builder.response
 
 
@@ -285,7 +285,7 @@ class YesMoreInfoIntentHandler(AbstractRequestHandler):
 
         handler_input.response_builder.speak(speech).ask(speech).set_card(
             SimpleCard(
-                title=_(data.SKILL_NAME),
+                title=(data.SKILL_NAME),
                 content=card_info))
         return handler_input.response_builder.response
 
@@ -404,8 +404,8 @@ class HelpIntentHandler(AbstractRequestHandler):
             util.process_ical_file()
         _ = handler_input.attributes_manager.request_attributes["_"]
 
-        handler_input.response_builder.speak(_(
-            data.HELP)).ask(_(data.HELP))
+        handler_input.response_builder.speak((
+            data.HELP)).ask((data.HELP))
         return handler_input.response_builder.response
 
 
@@ -422,7 +422,7 @@ class ExitIntentHandler(AbstractRequestHandler):
         logger.info("In ExitIntentHandler")
         _ = handler_input.attributes_manager.request_attributes["_"]
 
-        handler_input.response_builder.speak(_(
+        handler_input.response_builder.speak((
             data.STOP)).set_should_end_session(True)
         return handler_input.response_builder.response
 
@@ -449,8 +449,8 @@ class FallbackIntentHandler(AbstractRequestHandler):
         logger.info("In FallbackIntentHandler")
         _ = handler_input.attributes_manager.request_attributes["_"]
 
-        handler_input.response_builder.speak(_(
-            data.FALLBACK).format(data.SKILL_NAME)).ask(_(
+        handler_input.response_builder.speak((
+            data.FALLBACK).format(data.SKILL_NAME)).ask((
                 data.FALLBACK).format(data.SKILL_NAME))
 
         return handler_input.response_builder.response

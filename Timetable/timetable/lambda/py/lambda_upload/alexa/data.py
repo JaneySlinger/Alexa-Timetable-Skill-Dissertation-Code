@@ -5,12 +5,12 @@ from gettext import gettext as _
 
 SKILL_NAME = "Nottingham Timetable"
 
-WELCOME = _("Welcome to Nottingham Timetable!")
-HELP = _("You can say, what do i have today, what do i have this week, what is my next lecture, what time do lectures start tomorrow, or where is my lecture.")
-ABOUT = _("You can ask about your University of Nottingham timetable, such as what do i have today, what do i have this week, or where is my lecture.")
-STOP = _("Okay, see you next time!")
-FALLBACK = _("The {} can't help you with that. It can help you find out about your lectures today if you say what do i have today, or an overview of your week if you say tell me about my lectures this week. What can i help you with?")
-GENERIC_REPROMPT = _("What can I help you with?")
+WELCOME = ("Welcome to Nottingham Timetable!")
+HELP = ("You can say, what do i have today, what do i have this week, what is my next lecture, what time do lectures start tomorrow, or where is my lecture.")
+ABOUT = ("You can ask about your University of Nottingham timetable, such as what do i have today, what do i have this week, or where is my lecture.")
+STOP = ("Okay, see you next time!")
+FALLBACK = ("The {} can't help you with that. It can help you find out about your lectures today if you say what do i have today, or an overview of your week if you say tell me about my lectures this week. What can i help you with?")
+GENERIC_REPROMPT = ("What can I help you with?")
 
 BUILDING_CODES = {
     "UP-CLIVEG": "Sir Clive Granger Building",

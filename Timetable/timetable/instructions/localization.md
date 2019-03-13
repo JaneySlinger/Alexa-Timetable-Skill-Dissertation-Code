@@ -1,6 +1,6 @@
 # Internationalization of Python skill
 
-i18n and l10n are [supported](https://docs.python.org/3.6/library/i18n.html) by the standard python library module `gettext`. However, to make the skill compatible with i18n, we need to follow these steps, as mentioned in the [guide](https://docs.python.org/3.6/library/gettext.html#internationalizing-your-programs-and-modules) : 
+i18n and l10n are [supported](https://docs.python.org/3.6/library/i18n.html) by the standard python library module `gettext`. However, to make the skill compatible with i18n, we need to follow these steps, as mentioned in the [guide](https://docs.python.org/3.6/library/gettext.html#internationalizing-your-programs-and-modules) :
 
 
 1. Prepare your program or module by specially marking translatable strings
@@ -13,7 +13,7 @@ These steps are detailed below.
 
 ## Step 1 : Preparing the skill to extract data translatable strings
 
-Mark all the strings that needs to be translated with a special function **`_()`**. This function is used by the tools, to figure out all the data that needs to be extracted for translation.For example, consider your `skill.py` file contains these messages
+Mark all the strings that needs to be translated with a special function **`_()`**. This function is used by the tools, to figure out all the data that needs to be extracted for translation. For example, consider your `skill.py` file contains these messages
 
 ```
 # Contents of skill.py
@@ -37,7 +37,7 @@ custom_hello_message = _("Hi {}. How are you doing?").format(name)
 
 ## Step 2 : Run a tool to extract the messages and generate message catalog
 
-Some distributions of the standard library provide a python program 'pygettext.py', which processes the python program and extract a list of strings to translate. However, it has been observed that not all distributions (particularly in Unix) has this file installed along with the Python standard installation[[1](https://quip-amazon.com/5hH1AOMs2xxq#ZKZ9CAFqwSE)]. For this purpose, and as mentioned in the documentation, we use a third party library called '[Babel](http://babel.pocoo.org/en/latest/cmdline.html)'. 
+Some distributions of the standard library provide a python program 'pygettext.py', which processes the python program and extract a list of strings to translate. However, it has been observed that not all distributions (particularly in Unix) has this file installed along with the Python standard installation[[1](https://quip-amazon.com/5hH1AOMs2xxq#ZKZ9CAFqwSE)]. For this purpose, and as mentioned in the documentation, we use a third party library called '[Babel](http://babel.pocoo.org/en/latest/cmdline.html)'.
 
 Run the following commands to install babel and extract message strings from your skill file 'skill.py'.
 
@@ -204,10 +204,10 @@ import gettext
 i18n = gettext.translation('skill', localedir='locales', languages=['en-GB','es-ES'])
 _ = i18n.gettext
 
-# The variables in gettext.translation method are : 
+# The variables in gettext.translation method are :
 # - ".mo" domain name, which is "skill"
 # - localedir (relative or absolute locale root folder)
-# - languages array in which the translation has to be resolved. 
+# - languages array in which the translation has to be resolved.
 # If no string is present, then the fallback is the actual string passed to _()
 ```
 
@@ -242,23 +242,21 @@ sb.add_global_request_interceptor(LocalizationInterceptor())
     ```
     # In data.py
     from gettext import gettext as _
-        
+
     skill_name = _("Test skill")
     welcome_message = _("Welcome. I have more info on eggplant")
     ```
 
-* If there are multiple strings involved in string formatting, use `_()` on each string to translate initially and then concatenate. 
+* If there are multiple strings involved in string formatting, use `_()` on each string to translate initially and then concatenate.
      ```
      msg = _("message 1")
      msg += _("message 2")
-        
-     # If both message 1 and message 2 is used together always, then it is 
+
+     # If both message 1 and message 2 is used together always, then it is
      # better to concatenate both strings into one before translation.
     ```
-     
+
 
 ## References
 
 [1] : https://docs.python.org/3.6/library/gettext.html#internationalizing-your-programs-and-modules
-
-

@@ -13,16 +13,16 @@
             "codeUri": "lambda/py/lambda_upload",
             "functionName": "ask-custom-timetable-default",
             "handler": "lambda_function.lambda_handler",
-            "revisionId": "b3ae7642-9d8b-4013-be67-b3b8f02a464b",
+            "revisionId": "592050ea-fa13-40c6-a846-97de14c41c3d",
             "runtime": "python3.6"
           }
         ],
         "manifest": {
-          "eTag": "fdf346c7ee5dd59a5ae1b8db08040bfe"
+          "eTag": "d678a7cf10e7ffb24da4f0db2cfe744a"
         },
         "interactionModel": {
-          "en-US": {
-            "eTag": "482b844b9f8277251f7febc5f4c61e18"
+          "en-GB": {
+            "eTag": "5a8e901064830eb61da9fed9485ffbd7"
           }
         }
       },
