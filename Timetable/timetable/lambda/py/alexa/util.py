@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import requests
+from alexa import data
 from datetime import datetime, date, timedelta
 from icalendar import Calendar, Event, vText
 from ask_sdk_model import IntentRequest
@@ -15,16 +16,17 @@ logger.setLevel(logging.INFO)
 
 def process_ical_file():
     '''read the calendar file'''
-    icalFile = open('calendar.ics', 'rb')
-    calendar_to_parse = Calendar.from_ical(icalFile.read())
-    for component in calendar_to_parse.walk():
-        if component.name == "VEVENT":
-            extractData(component)
-    icalFile.close()
+    if TIMETABLE_DATA == []:
+        icalFile = open('calendar.ics', 'rb')
+        calendar_to_parse = Calendar.from_ical(icalFile.read())
+        for component in calendar_to_parse.walk():
+            if component.name == "VEVENT":
+                extractData(component)
+        icalFile.close()
 
 
 def extractData(component):
-    #TIMETABLE_DATA = []
+    # TIMETABLE_DATA = []
     '''extract the data from the component and store/print '''
     # string in form: "MODULE NAME - TYPE"
     # split the string before and after the "-"
@@ -85,28 +87,6 @@ def extractData(component):
                            "location_campus": campus, "location_building": building, "location_room": room, "start_time": start_time, "date": date, "time": time, "duration_hours": hour_duration, "duration_minutes": minute_duration})
 
 
-def get_restaurants_by_meal(city_data, meal_type):
-    """Return a restaurant list based on meal type."""
-    # type: (Dict, str) -> List
-    return [r for r in city_data["restaurants"] if meal_type in r["meals"]]
-
-
-def get_restaurants_by_name(city_data, name):
-    """Return a restaurant based on name."""
-    # type: (Dict, str) -> Dict
-    for r in city_data["restaurants"]:
-        if r["name"] == name:
-            return r
-    return {}
-
-
-def get_attractions_by_distance(city_data, distance):
-    """Return a attractions list based on distance."""
-    # type: (Dict, str) -> List
-    return [a for a in city_data["attractions"]
-            if int(a["distance"]) <= int(distance)]
-
-
 def build_url(city_data, api_info):
     """Return a `request` compatible URL from api properties."""
     # type: (Dict, Dict) -> str
@@ -123,21 +103,6 @@ def http_get(url, path_params=None):
     if response.status_code < 200 or response.status_code >= 300:
         response.raise_for_status()
     return response.json()
-
-
-def get_weather(city_data, api_info):
-    """Return weather information for a city by calling API."""
-    # type: (Dict, Dict) -> str, str, str
-    url = build_url(city_data, api_info)
-
-    response = http_get(url)
-    channel = response["query"]["results"]["channel"]
-
-    local_time = channel["lastBuildDate"][17:25]
-    current_temp = channel["item"]["condition"]["temp"]
-    current_condition = channel["item"]["condition"]["text"]
-
-    return local_time, current_temp, current_condition
 
 
 def get_resolved_value(request, slot_name):
@@ -258,7 +223,7 @@ def timeUntilLecture(lecture):
 
 
 def convertToWeekday(date):
-    # if(date == date.today())
+
     # needs checking for the today one
     weekday = date.isoweekday()
     if(weekday == 1):
@@ -275,4 +240,27 @@ def convertToWeekday(date):
         weekday = "saturday"
     elif(weekday == 7):
         weekday = "sunday"
+
     return weekday
+
+
+def convertBuildingCode(campus_code, building_code):
+    temp_code = campus_code + "-" + building_code
+    if(temp_code in data.BUILDING_CODES):
+        building_name = data.BUILDING_CODES.get(temp_code)
+    else:
+        building_name = building_code
+        # if the building name is not in the dictionary then just leave it as it is
+    return building_name
+
+
+def convertCampusCode(campus_code):
+    if(campus_code == "JC"):
+        converted_campus_code = "Jubilee"
+    elif(campus_code == "UP"):
+        converted_campus_code = "University Park"
+    elif(campus_code == "SB"):
+        converted_campus_code = "Sutton Bonnington"
+    else:
+        converted_campus_code = campus_code
+    return converted_campus_code

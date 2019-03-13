@@ -33,15 +33,15 @@ first_slot = "first_day"
 
 lecture_location_key = "LOCATION"
 
-
 # Skill Builder object
 sb = SkillBuilder()
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-
 # Request Handler classes
+
+
 class LaunchRequestHandler(AbstractRequestHandler):
     """Handler for skill launch."""
 
@@ -53,10 +53,10 @@ class LaunchRequestHandler(AbstractRequestHandler):
         # type: (HandlerInput) -> Response
         logger.info("In LaunchRequestHandler")
         _ = handler_input.attributes_manager.request_attributes["_"]
-        # set up TIMETABLE_DATA
-        util.process_ical_file()
-
-        # logger.info(_("This is an untranslated message"))
+        if not util.TIMETABLE_DATA:
+            # set up TIMETABLE_DATA
+            logger.info("Setting up timetable data")
+            util.process_ical_file()
 
         speech = _(data.WELCOME)
         speech += " " + _(data.HELP)
@@ -76,9 +76,15 @@ class AboutIntentHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
         logger.info("In AboutIntentHandler")
+        if not util.TIMETABLE_DATA:
+            # set up TIMETABLE_DATA
+            logger.info("Setting up timetable data")
+            util.process_ical_file()
+
         _ = handler_input.attributes_manager.request_attributes["_"]
 
-        handler_input.response_builder.speak(_(data.ABOUT))
+        handler_input.response_builder.speak(
+            _(data.ABOUT)).ask(_(data.GENERIC_REPROMPT))
         return handler_input.response_builder.response
 
 
@@ -92,6 +98,10 @@ class BeforeLectureIntentHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
         logger.info("In BeforeLectureIntentHandler")
+        if not util.TIMETABLE_DATA:
+            # set up TIMETABLE_DATA
+            logger.info("Setting up timetable data")
+            util.process_ical_file()
 
         attribute_manager = handler_input.attributes_manager
         session_attr = attribute_manager.session_attributes
@@ -107,11 +117,12 @@ class BeforeLectureIntentHandler(AbstractRequestHandler):
             module = lecture['code']
             room = lecture['location_room']
             building = lecture['location_building']
+            building = util.convertBuildingCode(
+                lecture["location_campus"], building)
             date = lecture['date']
 
-            speech = ("Your next lecture is {} in room {} in the {} building. Would you like more information about where that is?").format(
-                module, room, building, date)
-        # need to check whether it found a lecture
+            speech = ("Your next lecture is {} in room {} in {}. Would you like more information about where that is?").format(
+                module, room, building)
 
         handler_input.response_builder.speak(speech).ask(speech)
         return handler_input.response_builder.response
@@ -127,10 +138,14 @@ class WeekOverviewOrDetailedDayIntentHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
         logger.info("In WeekOverviewOrDetailedDayIntentHandler")
+        if not util.TIMETABLE_DATA:
+            # set up TIMETABLE_DATA
+            logger.info("Setting up timetable data")
+            util.process_ical_file()
 
         # the example shortened some of the lines of code by assigning a variable to store the result of some commonly used functions. Maybe use this but may just leave it as the functions as could be easier to read.
-        attribute_manager = handler_input.attributes_manager
-        session_attr = attribute_manager.session_attributes
+        #attribute_manager = handler_input.attributes_manager
+        #session_attr = attribute_manager.session_attributes
 
         # access the slot value for the day to be searched
         slots = handler_input.request_envelope.request.intent.slots
@@ -138,51 +153,53 @@ class WeekOverviewOrDetailedDayIntentHandler(AbstractRequestHandler):
             # check if the value in the slot was valid.
             if slots[day_slot].value != None:
                 logger.info("Inside the day_slot section")
-
+                logger.info(slots[day_slot].value)
                 value_to_search = slots[day_slot].value
 
                # save the value of the slot to return later. Might just be able to output it.
-                handler_input.attributes_manager.session_attributes[day_slot_key] = value_to_search
+                #handler_input.attributes_manager.session_attributes[day_slot_key] = value_to_search
 
                 if("W" in value_to_search):
                     # then the slot is a week value
                     # find the event on that day
                     week_events = util.findLecturesOnWeek(value_to_search)
-
-                    # define how you want alexa to respond.
                     if not week_events:
                         # if there are no lectures that week
                         speech = ("You have no events {}").format(
                             value_to_search)
                     else:
+                        length = len(week_events)
                         speech = ("You have ")
-                        for i in range(len(week_events) - 1):
-                            speech += ("{} lectures on {} between {} and {}, ").format(
-                                week_events[i]["num_of_lectures"], week_events[i]["weekday"], week_events[i]["day_start"], week_events[i]["day_end"])
-                        last_item_index = len(week_events) - 1
-                        speech += ("and {} lectures on {} between {} and {}.").format(week_events[last_item_index]["num_of_lectures"],
-                                                                                      week_events[last_item_index]["weekday"],
-                                                                                      week_events[last_item_index]["day_start"],
-                                                                                      week_events[last_item_index]["day_end"])
+                        for i in range(length):
+                            if(length > 1 and i == length - 1):
+                                # if there is more than one day with events
+                                speech += "and "
+                            speech += ("{}").format(
+                                week_events[i]["num_of_lectures"])
+                            if(week_events[i]["num_of_lectures"] == 1):
+                                # if there is only one lecture on that day then lecture does not need to be plural
+                                speech += " lecture "
+                            else:
+                                speech += " lectures "
+
+                            speech += ("on {} between {} and {}, ").format(
+                                week_events[i]["weekday"], week_events[i]["day_start"], week_events[i]["day_end"])
                 else:
                     # the slot is a date value for an individual day
                     events = util.searchByDate(value_to_search)
 
-                    # define how you want alexa to respond.
                     if not events:
                         # if there are no lectures on that day
                         speech = ("You have no events on {}").format(
                             value_to_search)
                     else:
+                        length = len(events)
                         speech = ("On {} you have ").format(value_to_search)
-                        for i in range(len(events) - 1):
+                        for i in range(length):
+                            if(length > 1 and i == length - 1):
+                                speech += ("and ")
                             speech += ("a {} hour {} {} at {}, ").format(
                                 events[i]["duration_hours"], events[i]["module"], events[i]["type"], events[i]["time"])
-                        last_item_index = len(events) - 1
-                        speech += ("and a {} hour {} {} at {}").format(events[last_item_index]["duration_hours"],
-                                                                       events[last_item_index]["module"],
-                                                                       events[last_item_index]["type"],
-                                                                       events[last_item_index]["time"])
             else:
                 speech = "I'm not sure what day or week you asked about. Please try again."
             reprompt = ("You can ask about your timetable today by saying, "
@@ -209,6 +226,10 @@ class NextLectureIntentHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
         logger.info("In NextLectureIntentHandler")
+        if not util.TIMETABLE_DATA:
+            # set up TIMETABLE_DATA
+            logger.info("Setting up timetable data")
+            util.process_ical_file()
 
         # get the value of the next lecture to happen
         next_lecture = util.findNextLecture()
@@ -221,7 +242,7 @@ class NextLectureIntentHandler(AbstractRequestHandler):
             speech = ("Your next lecture is {} at {}. That is in {}.").format(
                 next_lecture["module"], next_lecture["time"], time_until_lecture)
 
-        handler_input.response_builder.speak(speech)
+        handler_input.response_builder.speak(speech).ask(speech)
         return handler_input.response_builder.response
 
 
@@ -237,30 +258,35 @@ class YesMoreInfoIntentHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
         logger.info("In YesMoreInfoIntentHandler")
+        if not util.TIMETABLE_DATA:
+            # set up TIMETABLE_DATA
+            logger.info("Setting up timetable data")
+            util.process_ical_file()
 
         attribute_manager = handler_input.attributes_manager
         session_attr = attribute_manager.session_attributes
         _ = attribute_manager.request_attributes["_"]
 
-        # the restaurant name was stored as a session attribute in the earlier function
+        # the lecture was stored as a session attribute in the earlier function
         lecture = session_attr[lecture_location_key]
-        # restaurant_details = util.get_restaurants_by_name(
-        # data.CITY_DATA, restaurant_name)
+        building = util.convertBuildingCode(
+            lecture["location_campus"], lecture["location_building"])
+        campus = util.convertCampusCode(lecture["location_campus"])
 
-        speech = ("The {} building is on {} campus. Your lecture is in room {}. "
+        speech = ("{} is on {} campus. Your lecture is in room {}. "
                   "I have sent these details to the "
                   "Alexa App on your phone."
-                  .format(lecture["location_building"],
-                          lecture["location_campus"],
+                  .format(building,
+                          campus,
                           lecture["location_room"]))
         card_info = "Room: {}\nBuilding: {}\nCampus: {}\n".format(
-            lecture["location_room"], lecture["location_building"],
-            lecture["location_campus"])
+            lecture["location_room"], building,
+            campus)
 
-        handler_input.response_builder.speak(speech).set_card(
+        handler_input.response_builder.speak(speech).ask(speech).set_card(
             SimpleCard(
                 title=_(data.SKILL_NAME),
-                content=card_info)).set_should_end_session(True)
+                content=card_info))
         return handler_input.response_builder.response
 
 
@@ -276,10 +302,13 @@ class NoMoreInfoIntentHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
         logger.info("In NoMoreInfoIntentHandler")
+        if not util.TIMETABLE_DATA:
+            # set up TIMETABLE_DATA
+            logger.info("Setting up timetable data")
+            util.process_ical_file()
 
         speech = ("Ok.")
-        handler_input.response_builder.speak(speech).set_should_end_session(
-            True)
+        handler_input.response_builder.speak(speech).ask(speech)
         return handler_input.response_builder.response
 
 
@@ -295,6 +324,10 @@ class FirstLectureIntentHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
         logger.info("In FirstLectureIntentHandler")
+        if not util.TIMETABLE_DATA:
+            # set up TIMETABLE_DATA
+            logger.info("Setting up timetable data")
+            util.process_ical_file()
         attribute_manager = handler_input.attributes_manager
         session_attr = attribute_manager.session_attributes
 
@@ -365,6 +398,10 @@ class HelpIntentHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
         logger.info("In HelpIntentHandler")
+        if not util.TIMETABLE_DATA:
+            # set up TIMETABLE_DATA
+            logger.info("Setting up timetable data")
+            util.process_ical_file()
         _ = handler_input.attributes_manager.request_attributes["_"]
 
         handler_input.response_builder.speak(_(

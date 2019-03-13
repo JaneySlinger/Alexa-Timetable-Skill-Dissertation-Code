@@ -3,85 +3,69 @@
 # Resolving gettext as _ for module loading.
 from gettext import gettext as _
 
-SKILL_NAME = "Gloucester Guide"
+SKILL_NAME = "Nottingham Timetable"
 
 WELCOME = _("Welcome to Nottingham Timetable!")
-HELP = _("Say about, to hear more about the city, or say coffee, breakfast, lunch, or dinner, to hear local restaurant suggestions, or say recommend an attraction, or say, go outside. ")
-ABOUT = _("Gloucester Massachusetts is a city on the Atlantic Ocean. A popular summer beach destination, Gloucester has a rich history of fishing and ship building.")
+HELP = _("You can say, what do i have today, what do i have this week, what is my next lecture, what time do lectures start tomorrow, or where is my lecture.")
+ABOUT = _("You can ask about your University of Nottingham timetable, such as what do i have today, what do i have this week, or where is my lecture.")
 STOP = _("Okay, see you next time!")
-FALLBACK = _("The {} can't help you with that. It can help you learn about Gloucester if you say tell me about this place. What can I help you with?")
+FALLBACK = _("The {} can't help you with that. It can help you find out about your lectures today if you say what do i have today, or an overview of your week if you say tell me about my lectures this week. What can i help you with?")
 GENERIC_REPROMPT = _("What can I help you with?")
 
-CITY_DATA = {
-    "city": "Gloucester",
-    "state": "MA",
-    "postcode": "01930",
-    "restaurants": [
-        {
-            "name": "Zeke's Place",
-            "address": '66 East Main Street',
-            "phone": '978-283-0474',
-            "meals": 'breakfast, lunch',
-            "description": 'A cozy and popular spot for breakfast.  Try the blueberry french toast!',
-        },
-        {
-            "name": 'Morning Glory Coffee Shop',
-            "address": '25 Western Avenue',
-            "phone": '978-281-1851',
-            "meals": 'coffee, breakfast, lunch',
-            "description": 'A homestyle diner located just across the street from the harbor sea wall.',
-        },
-        {
-            "name": 'Sugar Magnolias',
-            "address": '112 Main Street',
-            "phone": '978-281-5310',
-            "meals": 'breakfast, lunch',
-            "description": 'A quaint eatery, popular for weekend brunch.  Try the carrot cake pancakes.',
-        },
-        {
-            "name": 'Seaport Grille',
-            "address": '6 Rowe Square',
-            "phone": '978-282-9799',
-            "meals": 'lunch, dinner',
-            "description": 'Serving seafood, steak and casual fare.  Enjoy harbor views on the deck.',
-        },
-        {
-            "name": 'Latitude 43',
-            "address": '25 Rogers Street',
-            "phone": '978-281-0223',
-            "meals": 'lunch, dinner',
-            "description": 'Features artsy decor and sushi specials.  Live music evenings at the adjoining Minglewood Tavern.',
-        },
-        {
-            "name": "George's Coffee Shop",
-            "address": '178 Washington Street',
-            "phone": '978-281-1910',
-            "meals": 'coffee, breakfast, lunch',
-            "description": 'A highly rated local diner with generously sized plates.',
-        },
-    ],
-    "attractions": [
-        {
-            "name": 'Whale Watching',
-            "description": 'Gloucester has tour boats that depart twice daily from Rogers street at the harbor.  Try either the 7 Seas Whale Watch, or Captain Bill and Sons Whale Watch. ',
-            "distance": '0',
-        },
-        {
-            "name": 'Good Harbor Beach',
-            "description": 'Facing the Atlantic Ocean, Good Harbor Beach has huge expanses of soft white sand that attracts hundreds of visitors every day during the summer.',
-            "distance": '2',
-        },
-        {
-            "name": 'Rockport',
-            "description": 'A quaint New England town, Rockport is famous for rocky beaches, seaside parks, lobster fishing boats, and several art studios.',
-            "distance": '4',
-        },
-        {
-            "name": 'Fenway Park',
-            "description": 'Home of the Boston Red Sox, Fenway park hosts baseball games From April until October, and is open for tours. ',
-            "distance": '38',
-        },
-    ],
+BUILDING_CODES = {
+    "UP-CLIVEG": "Sir Clive Granger Building",
+    "UP-HALLWARD": "Hallward Library",
+    "UP-HEMSLEY":	"University Staff Club",
+    "UP-HIGH":	"Highfield House",
+    "UP-HUGHST":	"Hugh Stewart House",
+    "UP-LASS":	"Law and Social Sciences Building",
+    "UP-PORT":	"Portland Building",
+    "UP-TRNT":	"Trent Building",
+    "UP-ARCH-SRB":	"Sustainable Research Building",
+    "UP-ARTCEN":	"Arts Centre Lecture Theatre",
+    "UP-BOOTS":	"Boots Science Building",
+    "UP-COATESRD":	"Coates Road Auditorium",
+    "UP-CHEM":	"Chemistry Building",
+    "UP-COAT":	"Coates Building",
+    "UP-ESLC":	"Engineering and Science Learning Centre",
+    "UP-GEOGREEN":	"George Green Library",
+    "UP-KEIGHTON AUD":	"Keighton Auditorium",
+    "UP-LIFESCI":	"Life Sciences Building",
+    "UP-MATH":	"Mathematical Sciences Building",
+    "UP-PHARM":	"Pharmacy Building",
+    "UP-PHYS":	"Physics Building",
+    "UP-POPE":	"Pope Building",
+    "UP-PRB":	"Pavement Research Building",
+    "UP-PSYC":	"Psychology Building",
+    "UP-TOWER":	"Tower Block",
+    "UP-WOLF":	"Wolfson Building",
+    "UP-HUMS":	"Humanities Building",
+    "UP-LENG":	"Lenton Grove",
+    "UP-WILL":	"Willoughby Hall",
+    "NMS-MEDSCH":	"Nottingham Medical School",
+    "QMC-STHBLK":	"South Block",
+    "JC-AEROSPACE-TEC":	"Aerospace Technology Centre",
+    "JC-AMEN":	"Amenities Building",
+    "JC-BSNORTH":	"Business School North",
+    "JC-BSSOUTH":	"Business School South",
+    "JC-DEARING":	"Dearing Building",
+    "JC-ENERGY-TEC":	"Energy Technologies Building",
+    "JC-EXCHGE":	"The Exchange Building",
+    "JC-DEARING": "The Dearing Building",
+    "JC-COMPSCI": "Computer Science",
+    "JC-NGB":	"Nottingham Geospatial Building",
+    "JC-SI-YUAN-CENTRE":	"The Si Yuan Centre of Contemporary Chinese Studies",
+    "JC-YANG-Fujia":	"YANG Fujia Building",
+    "CITY-CLINSCI":	"Clinical Sciences Building",
+    "SB-GATE":	"Gateway Building",
+    "SB-LECTBLK":	"Lecture Room Block",
+    "SB-MAINBLDG":	"Main Building",
+    "SB-PLANTSCI":	"Plant Sciences Building",
+    "SB-VETSCH":	"Veterinary Sciences Building",
+    "SB-FOODSCI": "Food Sciences Building",
+    "DERBY-DMS":	"Derby Medical School",
+    "DERBY-DSN":	"Derby School of Nursing",
+    "KMC-KM":	"Kings Meadow Campus"
 }
 
 MY_API = {

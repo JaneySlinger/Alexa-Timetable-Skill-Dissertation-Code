@@ -6,7 +6,9 @@
                     "name": "AboutIntent",
                     "samples": [
                         "about",
-                        "tell me about my timetable"
+                        "tell me about the skill",
+                        "what can i ask you",
+                        "what can i say"
                     ],
                     "slots": []
                 },
@@ -15,7 +17,8 @@
                     "name": "BeforeLectureIntent",
                     "samples": [
                         "where is my lecture",
-                        "wheres my lecture"
+                        "wheres my lecture",
+                        "where my lecture is"
                     ],
                     "slots": []
                 },
@@ -30,6 +33,10 @@
                         "what lectures do i have {day}",
                         "whats on my timetable {day}",
                         "whats on my timetable on {day}",
+                        "tell me more about {day}",
+                        "what i have {day}",
+                        "about my lectures {day}",
+                        "about my timetable {day}"
 
                     ],
                     "slots": [{
@@ -44,7 +51,11 @@
                         "when is my next lecture",
                         "when is my lecture",
                         "how long do i have before my next lecture",
-                        "what is the next lecture that i have"
+                        "what is the next lecture that i have",
+                        "when my lecture is",
+                        "how long it is until my next lecture",
+                        "what my lecture is",
+                        "what my next lecture is"
                     ],
                     "slots": []
                 },
@@ -59,7 +70,9 @@
                         "what time do i need to be on campus {first_day}",
                         "what time do i need to be on campus on {first_day}",
                         "what time do lectures start on {first_day}",
-                        "what time do lectures start {first_day}"
+                        "what time do lectures start {first_day}",
+                        "what time is my first lecture on {first_day}",
+                        "what time is my first lecture {first_day}"
                     ],
                     "slots": [{
                         "name": "first_day",
