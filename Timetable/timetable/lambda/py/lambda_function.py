@@ -123,8 +123,8 @@ class BeforeLectureIntentHandler(AbstractRequestHandler):
 
             speech = ("Your next lecture is {} in room {} in {}. Would you like more information about where that is?").format(
                 module, room, building)
-
-        handler_input.response_builder.speak(speech).ask(speech)
+        reprompt = "Would you like more information about where that is?"
+        handler_input.response_builder.speak(speech).ask(reprompt)
         return handler_input.response_builder.response
 
 
@@ -202,17 +202,17 @@ class WeekOverviewOrDetailedDayIntentHandler(AbstractRequestHandler):
                                 events[i]["duration_hours"], events[i]["module"], events[i]["type"], events[i]["time"])
             else:
                 speech = "I'm not sure what day or week you asked about. Please try again."
-            reprompt = ("You can ask about your timetable today by saying, "
-                        "whats on my timetable today")
+            # reprompt = ("You can ask about your timetable today by saying, "
+                # "whats on my timetable today")
         else:
             # the slot was empty
             logger.info("In the else section")
             speech = "I'm not sure what day or week you asked about. Please try again."
-            reprompt = ("I'm not sure what day or week you asked about. "
-                        "You can ask about your timetable this week by saying, "
-                        "whats on my timetable this week")
+            # reprompt = ("I'm not sure what day or week you asked about. "
+            #"You can ask about your timetable this week by saying, "
+            # "whats on my timetable this week")
 
-        handler_input.response_builder.speak(speech).ask(reprompt)
+        handler_input.response_builder.speak(speech)
         return handler_input.response_builder.response
 
 
@@ -242,7 +242,7 @@ class NextLectureIntentHandler(AbstractRequestHandler):
             speech = ("Your next lecture is {} at {}. That is in {}.").format(
                 next_lecture["module"], next_lecture["time"], time_until_lecture)
 
-        handler_input.response_builder.speak(speech).ask(speech)
+        handler_input.response_builder.speak(speech)
         return handler_input.response_builder.response
 
 
@@ -252,8 +252,8 @@ class YesMoreInfoIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.YesIntent")(handler_input)
-                and lecture_location_key in session_attr)
+        return (is_intent_name("AMAZON.YesIntent")(handler_input) and
+                lecture_location_key in session_attr)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -273,20 +273,15 @@ class YesMoreInfoIntentHandler(AbstractRequestHandler):
             lecture["location_campus"], lecture["location_building"])
         campus = util.convertCampusCode(lecture["location_campus"])
 
-        speech = ("{} is on {} campus. Your lecture is in room {}. "
-                  "I have sent these details to the "
-                  "Alexa App on your phone."
-                  .format(building,
-                          campus,
-                          lecture["location_room"]))
-        card_info = "Room: {}\nBuilding: {}\nCampus: {}\n".format(
-            lecture["location_room"], building,
-            campus)
+        speech = ("{} is on {} campus. Your lecture is in room {}. I have sent these details to the Alexa app on your phone.").format(
+            building, campus, lecture["location_room"])
 
-        handler_input.response_builder.speak(speech).ask(speech).set_card(
+        handler_input.response_builder.speak(speech).set_card(
             SimpleCard(
                 title=(data.SKILL_NAME),
                 content=card_info))
+
+        # handler_input.response_builder.speak(speech)
         return handler_input.response_builder.response
 
 
@@ -296,8 +291,8 @@ class NoMoreInfoIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.NoIntent")(handler_input) and
-                lecture_location_key in session_attr)
+        return (is_intent_name("AMAZON.NoIntent")(handler_input)
+                and lecture_location_key in session_attr)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -308,7 +303,8 @@ class NoMoreInfoIntentHandler(AbstractRequestHandler):
             util.process_ical_file()
 
         speech = ("Ok.")
-        handler_input.response_builder.speak(speech).ask(speech)
+        # handler_input.response_builder.speak(speech).ask(speech)
+        handler_input.response_builder.speak(speech)
         return handler_input.response_builder.response
 
 
@@ -359,17 +355,18 @@ class FirstLectureIntentHandler(AbstractRequestHandler):
 
             else:
                 speech = "I'm not sure what day you asked about. Please try again."
-            reprompt = ("You can ask about your first lecture today by saying, "
-                        "whats my first lecture today")
+            # reprompt = ("You can ask about your first lecture today by saying, "
+                # "whats my first lecture today")
         else:
             # the slot was empty
             logger.info("In the else section")
             speech = "I'm not sure what day you asked about. Please try again."
-            reprompt = ("I'm not sure what day you asked about. "
-                        "You can ask about your first lecture today or tomorrow by saying, "
-                        "whats my first lecture today?")
+            # reprompt = ("I'm not sure what day you asked about. "
+            #"You can ask about your first lecture today or tomorrow by saying, "
+            # "whats my first lecture today?")
 
-        handler_input.response_builder.speak(speech).ask(reprompt)
+        # handler_input.response_builder.speak(speech).ask(reprompt)
+        handler_input.response_builder.speak(speech)
         return handler_input.response_builder.response
 
 
@@ -414,8 +411,8 @@ class ExitIntentHandler(AbstractRequestHandler):
 
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
-        return (is_intent_name("AMAZON.CancelIntent")(handler_input) or
-                is_intent_name("AMAZON.StopIntent")(handler_input))
+        return (is_intent_name("AMAZON.CancelIntent")(handler_input)
+                or is_intent_name("AMAZON.StopIntent")(handler_input))
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -438,11 +435,11 @@ class FallbackIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.FallbackIntent")(handler_input) or
-                ("restaurant" not in session_attr and (
-                    is_intent_name("AMAZON.YesIntent")(handler_input) or
-                    is_intent_name("AMAZON.NoIntent")(handler_input))
-                 ))
+        return (is_intent_name("AMAZON.FallbackIntent")(handler_input)
+                or ("restaurant" not in session_attr and (
+                    is_intent_name("AMAZON.YesIntent")(handler_input)
+                    or is_intent_name("AMAZON.NoIntent")(handler_input))
+                    ))
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
