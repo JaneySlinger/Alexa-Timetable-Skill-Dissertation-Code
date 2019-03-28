@@ -252,8 +252,8 @@ class YesMoreInfoIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.YesIntent")(handler_input) and
-                lecture_location_key in session_attr)
+        return (is_intent_name("AMAZON.YesIntent")(handler_input)
+                and lecture_location_key in session_attr)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -276,6 +276,9 @@ class YesMoreInfoIntentHandler(AbstractRequestHandler):
         speech = ("{} is on {} campus. Your lecture is in room {}. I have sent these details to the Alexa app on your phone.").format(
             building, campus, lecture["location_room"])
 
+        card_info = ("Room: {} \n Building: {} \n Campus: {}").format(
+            lecture["location_room"], building, campus)
+
         handler_input.response_builder.speak(speech).set_card(
             SimpleCard(
                 title=(data.SKILL_NAME),
@@ -291,8 +294,8 @@ class NoMoreInfoIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.NoIntent")(handler_input)
-                and lecture_location_key in session_attr)
+        return (is_intent_name("AMAZON.NoIntent")(handler_input) and
+                lecture_location_key in session_attr)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -339,10 +342,10 @@ class FirstLectureIntentHandler(AbstractRequestHandler):
                 events_on_day = util.searchByDate(day_to_search)
 
                 if not events_on_day:
-                    speech = ("You don't have any lectures {}").format(
+                    speech = ("You don't have any lectures on {}").format(
                         day_to_search)
                 else:
-                    speech = ("Your first lecture {} is {} at {}. ").format(
+                    speech = ("Your first lecture on {} is {} at {}. ").format(
                         day_to_search, events_on_day[0]["module"], events_on_day[0]["time"])
                     # Calculate how long it is until the lecture starts
                     time_until_lecture = util.timeUntilLecture(
@@ -411,8 +414,8 @@ class ExitIntentHandler(AbstractRequestHandler):
 
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
-        return (is_intent_name("AMAZON.CancelIntent")(handler_input)
-                or is_intent_name("AMAZON.StopIntent")(handler_input))
+        return (is_intent_name("AMAZON.CancelIntent")(handler_input) or
+                is_intent_name("AMAZON.StopIntent")(handler_input))
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -435,11 +438,11 @@ class FallbackIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.FallbackIntent")(handler_input)
-                or ("restaurant" not in session_attr and (
-                    is_intent_name("AMAZON.YesIntent")(handler_input)
-                    or is_intent_name("AMAZON.NoIntent")(handler_input))
-                    ))
+        return (is_intent_name("AMAZON.FallbackIntent")(handler_input) or
+                ("restaurant" not in session_attr and (
+                    is_intent_name("AMAZON.YesIntent")(handler_input) or
+                    is_intent_name("AMAZON.NoIntent")(handler_input))
+                 ))
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response

@@ -18,7 +18,9 @@
                     "samples": [
                         "where is my lecture",
                         "wheres my lecture",
-                        "where my lecture is"
+                        "where my lecture is",
+                        "what room my lecture is in",
+                        "what room is my lecture in"
                     ],
                     "slots": []
                 },
