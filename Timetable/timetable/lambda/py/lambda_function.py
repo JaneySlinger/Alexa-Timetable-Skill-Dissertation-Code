@@ -114,15 +114,15 @@ class BeforeLectureIntentHandler(AbstractRequestHandler):
             # save the lecture to be used in the YesMoreInfoIntentHandler
             handler_input.attributes_manager.session_attributes[lecture_location_key] = lecture
 
-            module = lecture['code']
+            time = lecture['time']
             room = lecture['location_room']
             building = lecture['location_building']
             building = util.convertBuildingCode(
                 lecture["location_campus"], building)
             date = lecture['date']
 
-            speech = ("Your next lecture is {} in room {} in {}. Would you like more information about where that is?").format(
-                module, room, building)
+            speech = ("Your next lecture is in room {} in {} at {}. Would you like more information about where that is?").format(
+                room, building, time)
         reprompt = "Would you like more information about where that is?"
         handler_input.response_builder.speak(speech).ask(reprompt)
         return handler_input.response_builder.response
@@ -252,8 +252,8 @@ class YesMoreInfoIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.YesIntent")(handler_input)
-                and lecture_location_key in session_attr)
+        return (is_intent_name("AMAZON.YesIntent")(handler_input) and
+                lecture_location_key in session_attr)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -284,7 +284,6 @@ class YesMoreInfoIntentHandler(AbstractRequestHandler):
                 title=(data.SKILL_NAME),
                 content=card_info))
 
-        # handler_input.response_builder.speak(speech)
         return handler_input.response_builder.response
 
 
@@ -294,8 +293,8 @@ class NoMoreInfoIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.NoIntent")(handler_input) and
-                lecture_location_key in session_attr)
+        return (is_intent_name("AMAZON.NoIntent")(handler_input)
+                and lecture_location_key in session_attr)
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -414,8 +413,8 @@ class ExitIntentHandler(AbstractRequestHandler):
 
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
-        return (is_intent_name("AMAZON.CancelIntent")(handler_input) or
-                is_intent_name("AMAZON.StopIntent")(handler_input))
+        return (is_intent_name("AMAZON.CancelIntent")(handler_input)
+                or is_intent_name("AMAZON.StopIntent")(handler_input))
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
@@ -438,11 +437,11 @@ class FallbackIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
-        return (is_intent_name("AMAZON.FallbackIntent")(handler_input) or
-                ("restaurant" not in session_attr and (
-                    is_intent_name("AMAZON.YesIntent")(handler_input) or
-                    is_intent_name("AMAZON.NoIntent")(handler_input))
-                 ))
+        return (is_intent_name("AMAZON.FallbackIntent")(handler_input)
+                or ("restaurant" not in session_attr and (
+                    is_intent_name("AMAZON.YesIntent")(handler_input)
+                    or is_intent_name("AMAZON.NoIntent")(handler_input))
+                    ))
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
