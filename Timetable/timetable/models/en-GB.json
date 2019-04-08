@@ -17,6 +17,7 @@
                     "name": "BeforeLectureIntent",
                     "samples": [
                         "where is my lecture",
+                        "where my next lecture is",
                         "wheres my lecture",
                         "where my lecture is",
                         "what room my lecture is in",
@@ -51,12 +52,10 @@
                     "name": "NextLectureIntent",
                     "samples": [
                         "when is my next lecture",
-                        "when is my lecture",
                         "how long do i have before my next lecture",
                         "what is the next lecture that i have",
-                        "when my lecture is",
+                        "what time my lecture is",
                         "how long it is until my next lecture",
-                        "what my lecture is",
                         "what my next lecture is"
                     ],
                     "slots": []

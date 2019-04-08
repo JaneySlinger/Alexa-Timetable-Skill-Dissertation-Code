@@ -63,7 +63,10 @@ def extractData(component):
     campus = location[0]
     building = location[1]
     room = location[2]
-    # may need to remove . and + from some room codes
+    # remove + from some room codes
+    for char in room:
+        if char in " +":
+            room = room.replace(char, '')
 
     # the .dt converts the time to datetime object so that it can be read and processed more easily
     # example of this taken from https://stackoverflow.com/questions/26238835/parse-dates-with-icalendar-and-compare-to-python-datetime

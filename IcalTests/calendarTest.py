@@ -98,6 +98,9 @@ def extractData(component):
     building = location[1]
     # may need to remove . and + from some room codes
     room = location[2]
+    for char in room:
+        if char in " +.":
+            room = room.replace(char, '')
 
     # print(campus + ", " + building + ", " + room)
 

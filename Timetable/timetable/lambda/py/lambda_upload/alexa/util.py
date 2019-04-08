@@ -30,9 +30,10 @@ def extractData(component):
     '''extract the data from the component and store/print '''
     # string in form: "MODULE NAME - TYPE"
     # split the string before and after the "-"
-    summary = component.get('summary')
+
     # split function referenced from python documentation
     # https://docs.python.org/3/library/stdtypes.html#str.split
+    summary = component.get('summary')
     separated_words = summary.split(" - ", 1)
     module_name = separated_words[0]
     event_type = separated_words[1]
@@ -42,21 +43,17 @@ def extractData(component):
     # Blank Line
     # Module Code: COMP/3011/01"
     # cut the /01 off the end as it is the same for all of them and not part of the code
-    # then the last time updated but I don't think I need that
+    # then the last time updated which is not needed
     description = component.get('description')
-    # splitlines found on python documentation
-    # https://docs.python.org/3/library/stdtypes.html#str.splitlines
+    # splitlines found on python documentation https://docs.python.org/3/library/stdtypes.html#str.splitlines
     lines_of_description = description.splitlines()
-    lecturer = lines_of_description[0].split(": ")[1]
-    # may want to reverse the order so it reads Dr M Pound rather than Pound M Dr
-    # would do this by splitting the string, reordering the resulting words, and joining
 
     module_code_raw = lines_of_description[2].split(
         ": ")[1]  # still has the /01 on the end
     # split into COMP 3006 and 01 and then ignore the 01 at the end
     partial_code = module_code_raw.split("/")
     if(len(partial_code) > 1):
-        # The Dissertation module does not have a module code in the timetable file.
+        # The Dissertation module, and some potential other modules, does not have a module code in the timetable file.
         module_code = partial_code[0] + partial_code[1]
     else:
         module_code = "NONE"
@@ -65,15 +62,17 @@ def extractData(component):
     location = (component.get('location')).split("-")
     campus = location[0]
     building = location[1]
-    # may need to remove . and + from some room codes
     room = location[2]
+    # remove + from some room codes
+    for char in room:
+        if char in " +":
+            room = room.replace(char, '')
 
     # the .dt converts the time to datetime object so that it can be read and processed more easily
     # example of this taken from https://stackoverflow.com/questions/26238835/parse-dates-with-icalendar-and-compare-to-python-datetime
     start_time = component['DTSTART'].dt
     # Store the date as YYYY-MM-DD so it matches AMAZON.DATE format
     date = "{:%Y-%m-%d}".format(start_time)
-
     # Store the time as HH:MM so that it matches the AMAZON.TIME format
     time = "{:%H:%M}".format(start_time)
 
@@ -83,16 +82,10 @@ def extractData(component):
     hour_duration = duration[0]
     minute_duration = duration[1]
 
-    TIMETABLE_DATA.append({"module": module_name, "type": event_type, "lecturer": lecturer, "code": module_code,
-                           "location_campus": campus, "location_building": building, "location_room": room, "start_time": start_time, "date": date, "time": time, "duration_hours": hour_duration, "duration_minutes": minute_duration})
+    TIMETABLE_DATA.append({"module": module_name, "type": event_type, "code": module_code, "location_campus": campus, "location_building": building,
+                           "location_room": room, "start_time": start_time, "date": date, "time": time, "duration_hours": hour_duration, "duration_minutes": minute_duration})
 
-
-def build_url(city_data, api_info):
-    """Return a `request` compatible URL from api properties."""
-    # type: (Dict, Dict) -> str
-    return "{}:{}{}".format(
-        api_info["host"], str(api_info["port"]), api_info["path"].format(
-            city=city_data["city"], state=city_data["state"]))
+# from sample skill
 
 
 def http_get(url, path_params=None):
@@ -103,6 +96,8 @@ def http_get(url, path_params=None):
     if response.status_code < 200 or response.status_code >= 300:
         response.raise_for_status()
     return response.json()
+
+# from sample skill
 
 
 def get_resolved_value(request, slot_name):
@@ -197,33 +192,34 @@ def timeUntilLecture(lecture):
 
     if(lecture_time > currentTime):
         time_until_lecture = lecture_time - currentTime
-        # print(time_until_lecture)
         time_string = str(time_until_lecture)
+        # in form 3 days, 15:46:41.210445
         if("days" in time_string):
+            # separate the days value
             split_days = time_string.split(",")
-            days = split_days[0]
-            time_string = split_days[1]
-            time = time_string.split(".")[0]
+            days = split_days[0]  # 3 days
+            time_string = split_days[1]  # 15:46:41.210455
+            # discard the milliseconds
+            time = time_string.split(".")[0]  # 15:46:41
+            # Convert to 15 hours and 46 minutes
             time = time.split(":")[0] + " hours and " + \
                 time.split(":")[1] + "minutes"
             time_until_lecture = days + time
         else:
             # there are no days in the time
-            time_until_lecture = time_string.split(".")[0]
+            # 15:46:41:210455
+            # discard the milliseconds
+            time_until_lecture = time_string.split(".")[0]  # 15:46:41
+            # Convert to 15 hours and 46 minutes
             time_until_lecture = time_until_lecture.split(
                 ":")[0] + " hours and " + time_until_lecture.split(":")[1] + " minutes"
-
-        # print(time_until_lecture)
-        # print(type(time_until_lecture))
         return time_until_lecture
     else:
         # if the event was in the past return -1
-        # print("-1")
         return -1
 
 
 def convertToWeekday(date):
-
     # needs checking for the today one
     weekday = date.isoweekday()
     if(weekday == 1):

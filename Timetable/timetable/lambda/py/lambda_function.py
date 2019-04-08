@@ -137,8 +137,13 @@ class WeekOverviewOrDetailedDayIntentHandler(AbstractRequestHandler):
                         speech = ("You have no events on {}").format(
                             value_to_search)
                     else:
+                        # find Weekday
+
+                        weekday = util.convertToWeekday(
+                            events[0]['start_time'])
                         length = len(events)
-                        speech = ("On {} you have ").format(value_to_search)
+                        speech = ("On {} {} you have ").format(
+                            weekday, value_to_search)
                         for i in range(length):
                             if(length > 1 and i == length - 1):
                                 speech += ("and ")
@@ -211,15 +216,15 @@ class BeforeLectureIntentHandler(AbstractRequestHandler):
             # save the lecture to be used in the YesMoreInfoIntentHandler
             handler_input.attributes_manager.session_attributes[lecture_location_key] = lecture
 
-            module = lecture['code']
+            time = lecture['time']
             room = lecture['location_room']
             building = lecture['location_building']
             building = util.convertBuildingCode(
                 lecture["location_campus"], building)
             date = lecture['date']
 
-            speech = ("Your next lecture is {} in room {} in {}. Would you like more information about where that is?").format(
-                module, room, building)
+            speech = ("Your next lecture is in room {} in {} at {}. Would you like more information about where that is?").format(
+                room, building, time)
         reprompt = "Would you like more information about where that is?"
         handler_input.response_builder.speak(speech).ask(reprompt)
         return handler_input.response_builder.response
@@ -322,8 +327,10 @@ class FirstLectureIntentHandler(AbstractRequestHandler):
                     speech = ("You don't have any lectures on {}").format(
                         day_to_search)
                 else:
-                    speech = ("Your first lecture on {} is {} at {}. ").format(
-                        day_to_search, events_on_day[0]["module"], events_on_day[0]["time"])
+                    weekday = util.convertToWeekday(
+                        events_on_day[0]['start_time'])
+                    speech = ("Your first lecture on {} {} is {} at {}. ").format(
+                        weekday, day_to_search, events_on_day[0]["module"], events_on_day[0]["time"])
                     # Calculate how long it is until the lecture starts
                     time_until_lecture = util.timeUntilLecture(
                         events_on_day[0])
