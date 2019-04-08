@@ -219,6 +219,7 @@ def timeUntilLecture(date):
         time_until_lecture = lecture_time - currentTime
         print(time_until_lecture)
         time_string = str(time_until_lecture)
+        print(time_string)
         if("days" in time_string):
             split_days = time_string.split(",")
             days = split_days[0]
@@ -239,7 +240,7 @@ def timeUntilLecture(date):
 printWholeCalendar()
 # printSelectModule("Graphics")
 # printTodayTimetable()
-# print(TIMETABLE_DATA)
+print(TIMETABLE_DATA)
 # printNextLecture()
 # printLecturesOnWeek("2019-W10")
-timeUntilLecture("2019-03-15")
+timeUntilLecture("2019-04-05")
