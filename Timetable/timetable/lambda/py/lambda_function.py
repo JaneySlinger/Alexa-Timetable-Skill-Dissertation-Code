@@ -1,12 +1,4 @@
 # -*- coding: utf-8 -*-
-
-# City Guide: A sample Alexa Skill Lambda function
-# This function shows how you can manage data in objects and arrays,
-# choose a random recommendation,
-# call an external API and speak the result,
-# handle YES/NO intents with session attributes,
-# and return text data on a card.
-
 import logging
 import random
 import gettext
@@ -24,11 +16,10 @@ from ask_sdk_model.ui import SimpleCard
 
 from alexa import data, util
 
-
-day_slot_key = "DATE"
+#day_slot_key = "DATE"
 day_slot = "day"
 
-first_slot_key = "DATE"
+#first_slot_key = "DATE"
 first_slot = "first_day"
 
 lecture_location_key = "LOCATION"
@@ -88,46 +79,6 @@ class AboutIntentHandler(AbstractRequestHandler):
         return handler_input.response_builder.response
 
 
-class BeforeLectureIntentHandler(AbstractRequestHandler):
-    """Handler for before lecture intent which returns the location of the next scheduled event."""
-
-    def can_handle(self, handler_input):
-        # type: (HandlerInput) -> bool
-        return is_intent_name("BeforeLectureIntent")(handler_input)
-
-    def handle(self, handler_input):
-        # type: (HandlerInput) -> Response
-        logger.info("In BeforeLectureIntentHandler")
-        if not util.TIMETABLE_DATA:
-            # set up TIMETABLE_DATA
-            logger.info("Setting up timetable data")
-            util.process_ical_file()
-
-        attribute_manager = handler_input.attributes_manager
-        session_attr = attribute_manager.session_attributes
-
-        lecture = util.findNextLecture()
-        if not lecture:
-            # if there aren't any more lectures on the timetable
-            speech = ("There are no more lectures on your timetable.")
-        else:
-            # save the lecture to be used in the YesMoreInfoIntentHandler
-            handler_input.attributes_manager.session_attributes[lecture_location_key] = lecture
-
-            module = lecture['code']
-            room = lecture['location_room']
-            building = lecture['location_building']
-            building = util.convertBuildingCode(
-                lecture["location_campus"], building)
-            date = lecture['date']
-
-            speech = ("Your next lecture is {} in room {} in {}. Would you like more information about where that is?").format(
-                module, room, building)
-        reprompt = "Would you like more information about where that is?"
-        handler_input.response_builder.speak(speech).ask(reprompt)
-        return handler_input.response_builder.response
-
-
 class WeekOverviewOrDetailedDayIntentHandler(AbstractRequestHandler):
     """Handler for WeekOverviewOrDetailedDayIntent."""
 
@@ -143,10 +94,6 @@ class WeekOverviewOrDetailedDayIntentHandler(AbstractRequestHandler):
             logger.info("Setting up timetable data")
             util.process_ical_file()
 
-        # the example shortened some of the lines of code by assigning a variable to store the result of some commonly used functions. Maybe use this but may just leave it as the functions as could be easier to read.
-        #attribute_manager = handler_input.attributes_manager
-        #session_attr = attribute_manager.session_attributes
-
         # access the slot value for the day to be searched
         slots = handler_input.request_envelope.request.intent.slots
         if day_slot in slots:
@@ -155,9 +102,6 @@ class WeekOverviewOrDetailedDayIntentHandler(AbstractRequestHandler):
                 logger.info("Inside the day_slot section")
                 logger.info(slots[day_slot].value)
                 value_to_search = slots[day_slot].value
-
-               # save the value of the slot to return later. Might just be able to output it.
-                #handler_input.attributes_manager.session_attributes[day_slot_key] = value_to_search
 
                 if("W" in value_to_search):
                     # then the slot is a week value
@@ -202,15 +146,10 @@ class WeekOverviewOrDetailedDayIntentHandler(AbstractRequestHandler):
                                 events[i]["duration_hours"], events[i]["module"], events[i]["type"], events[i]["time"])
             else:
                 speech = "I'm not sure what day or week you asked about. Please try again."
-            # reprompt = ("You can ask about your timetable today by saying, "
-                # "whats on my timetable today")
         else:
             # the slot was empty
             logger.info("In the else section")
             speech = "I'm not sure what day or week you asked about. Please try again."
-            # reprompt = ("I'm not sure what day or week you asked about. "
-            #"You can ask about your timetable this week by saying, "
-            # "whats on my timetable this week")
 
         handler_input.response_builder.speak(speech)
         return handler_input.response_builder.response
@@ -243,6 +182,46 @@ class NextLectureIntentHandler(AbstractRequestHandler):
                 next_lecture["module"], next_lecture["time"], time_until_lecture)
 
         handler_input.response_builder.speak(speech)
+        return handler_input.response_builder.response
+
+
+class BeforeLectureIntentHandler(AbstractRequestHandler):
+    """Handler for before lecture intent which returns the location of the next scheduled event."""
+
+    def can_handle(self, handler_input):
+        # type: (HandlerInput) -> bool
+        return is_intent_name("BeforeLectureIntent")(handler_input)
+
+    def handle(self, handler_input):
+        # type: (HandlerInput) -> Response
+        logger.info("In BeforeLectureIntentHandler")
+        if not util.TIMETABLE_DATA:
+            # set up TIMETABLE_DATA
+            logger.info("Setting up timetable data")
+            util.process_ical_file()
+
+        attribute_manager = handler_input.attributes_manager
+        session_attr = attribute_manager.session_attributes
+
+        lecture = util.findNextLecture()
+        if not lecture:
+            # if there aren't any more lectures on the timetable
+            speech = ("There are no more lectures on your timetable.")
+        else:
+            # save the lecture to be used in the YesMoreInfoIntentHandler
+            handler_input.attributes_manager.session_attributes[lecture_location_key] = lecture
+
+            module = lecture['code']
+            room = lecture['location_room']
+            building = lecture['location_building']
+            building = util.convertBuildingCode(
+                lecture["location_campus"], building)
+            date = lecture['date']
+
+            speech = ("Your next lecture is {} in room {} in {}. Would you like more information about where that is?").format(
+                module, room, building)
+        reprompt = "Would you like more information about where that is?"
+        handler_input.response_builder.speak(speech).ask(reprompt)
         return handler_input.response_builder.response
 
 
@@ -283,8 +262,6 @@ class YesMoreInfoIntentHandler(AbstractRequestHandler):
             SimpleCard(
                 title=(data.SKILL_NAME),
                 content=card_info))
-
-        # handler_input.response_builder.speak(speech)
         return handler_input.response_builder.response
 
 
@@ -358,19 +335,15 @@ class FirstLectureIntentHandler(AbstractRequestHandler):
 
             else:
                 speech = "I'm not sure what day you asked about. Please try again."
-            # reprompt = ("You can ask about your first lecture today by saying, "
-                # "whats my first lecture today")
         else:
             # the slot was empty
             logger.info("In the else section")
             speech = "I'm not sure what day you asked about. Please try again."
-            # reprompt = ("I'm not sure what day you asked about. "
-            #"You can ask about your first lecture today or tomorrow by saying, "
-            # "whats my first lecture today?")
 
-        # handler_input.response_builder.speak(speech).ask(reprompt)
         handler_input.response_builder.speak(speech)
         return handler_input.response_builder.response
+
+# included in sample skill
 
 
 class SessionEndedRequestHandler(AbstractRequestHandler):
@@ -408,6 +381,8 @@ class HelpIntentHandler(AbstractRequestHandler):
             data.HELP)).ask((data.HELP))
         return handler_input.response_builder.response
 
+# included in sample skill
+
 
 class ExitIntentHandler(AbstractRequestHandler):
     """Single Handler for Cancel, Stop intents."""
@@ -426,6 +401,8 @@ class ExitIntentHandler(AbstractRequestHandler):
             data.STOP)).set_should_end_session(True)
         return handler_input.response_builder.response
 
+# from the sample skill
+
 
 class FallbackIntentHandler(AbstractRequestHandler):
     """Handler for handling fallback intent or Yes/No without
@@ -439,7 +416,7 @@ class FallbackIntentHandler(AbstractRequestHandler):
         # type: (HandlerInput) -> bool
         session_attr = handler_input.attributes_manager.session_attributes
         return (is_intent_name("AMAZON.FallbackIntent")(handler_input) or
-                ("restaurant" not in session_attr and (
+                (lecture_location_key not in session_attr and (
                     is_intent_name("AMAZON.YesIntent")(handler_input) or
                     is_intent_name("AMAZON.NoIntent")(handler_input))
                  ))
@@ -456,7 +433,7 @@ class FallbackIntentHandler(AbstractRequestHandler):
         return handler_input.response_builder.response
 
 
-# Exception Handler classes
+# Exception Handler classes - included in sample skill
 class CatchAllExceptionHandler(AbstractExceptionHandler):
     """Catch All Exception handler.
 
@@ -477,6 +454,8 @@ class CatchAllExceptionHandler(AbstractExceptionHandler):
         handler_input.response_builder.speak(speech).ask(speech)
 
         return handler_input.response_builder.response
+
+# included in sample skill
 
 
 class LocalizationInterceptor(AbstractRequestInterceptor):
