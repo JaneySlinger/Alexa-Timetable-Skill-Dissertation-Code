@@ -1,0 +1,31 @@
+{
+    "manifest": {
+        "publishingInformation": {
+            "locales": {
+                "en-GB": {
+                    "summary": "Query your University of Nottingham Timetable.",
+                    "examplePhrases": [
+                        "Alexa open my timetable.",
+                        "Alexa ask my timetable what do I have today",
+                        "Alexa ask my timetable when is my next lecture"
+                    ],
+                    "name": "Timetable",
+                    "description": "Ask about your timetable for the University of Nottingham."
+                }
+            },
+            "isAvailableWorldwide": true,
+            "testingInstructions": "Sample Testing Instructions.",
+            "category": "EDUCATION_AND_REFERENCE",
+            "distributionCountries": []
+        },
+        "apis": {
+            "custom": {
+                "endpoint": {
+                    "sourceDir": "lambda/py/lambda_upload",
+                    "uri": "ask-custom-timetable-default"
+                }
+            }
+        },
+        "manifestVersion": "1.0"
+    }
+}

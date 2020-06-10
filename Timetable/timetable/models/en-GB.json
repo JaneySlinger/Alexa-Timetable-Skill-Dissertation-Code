@@ -1,0 +1,108 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "my timetable",
+            "intents": [{
+                    "name": "AboutIntent",
+                    "samples": [
+                        "about",
+                        "tell me about the skill",
+                        "what can i ask you",
+                        "what can i say"
+                    ],
+                    "slots": []
+                },
+
+                {
+                    "name": "BeforeLectureIntent",
+                    "samples": [
+                        "where is my lecture",
+                        "where my next lecture is",
+                        "wheres my lecture",
+                        "where my lecture is",
+                        "what room my lecture is in",
+                        "what room is my lecture in"
+                    ],
+                    "slots": []
+                },
+                {
+                    "name": "WeekOverviewOrDetailedDayIntent",
+                    "samples": [
+                        "tell me what lectures i have {day}",
+                        "tell me what lectures I have on {day}",
+                        "what do i have {day}",
+                        "what do I have on {day}",
+                        "what lectures do i have on {day}",
+                        "what lectures do i have {day}",
+                        "whats on my timetable {day}",
+                        "whats on my timetable on {day}",
+                        "tell me more about {day}",
+                        "what i have {day}",
+                        "about my lectures {day}",
+                        "about my timetable {day}"
+
+                    ],
+                    "slots": [{
+                        "name": "day",
+                        "type": "AMAZON.DATE",
+                        "samples": []
+                    }]
+                },
+                {
+                    "name": "NextLectureIntent",
+                    "samples": [
+                        "when is my next lecture",
+                        "how long do i have before my next lecture",
+                        "what is the next lecture that i have",
+                        "what time my lecture is",
+                        "how long it is until my next lecture",
+                        "what my next lecture is"
+                    ],
+                    "slots": []
+                },
+
+                {
+                    "name": "FirstLectureIntent",
+                    "samples": [
+                        "when and what is my first lecture {first_day}",
+                        "whats my first lecture {first_day}",
+                        "whats my first lecture on {first_day}",
+                        "tell me about my first lecture {first_day}",
+                        "what time do i need to be on campus {first_day}",
+                        "what time do i need to be on campus on {first_day}",
+                        "what time do lectures start on {first_day}",
+                        "what time do lectures start {first_day}",
+                        "what time is my first lecture on {first_day}",
+                        "what time is my first lecture {first_day}"
+                    ],
+                    "slots": [{
+                        "name": "first_day",
+                        "type": "AMAZON.DATE",
+                        "samples": []
+                    }]
+                },
+                {
+                    "name": "AMAZON.YesIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NoIntent",
+                    "samples": []
+                },
+
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                }
+            ]
+        }
+    }
+}
